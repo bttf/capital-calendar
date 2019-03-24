@@ -1,0 +1,40 @@
+{
+  "name": "scribble.today",
+  "version": "0.0.1",
+  "main": "app.js",
+  "author": "bttf",
+  "license": "MIT",
+  "scripts": {
+    "migrate": "db-migrate up --config config/database.json",
+    "start": "node dist",
+    "build": "babel src --out-dir dist",
+    "dev": "nodemon --watch src -e js --exec \"yarn debug\"",
+    "debug": "yarn migrate && babel-node --inspect=0.0.0.0:9229 src"
+  },
+  "dependencies": {
+    "bcrypt": "^3.0.5",
+    "cors": "^2.8.4",
+    "db-migrate": "^0.10.1",
+    "db-migrate-pg": "^0.2.5",
+    "express": "^4.16.4",
+    "express-graphql": "^0.7.1",
+    "graphql": "^14.1.1",
+    "jsonwebtoken": "^8.5.1",
+    "oauth": "^0.9.15",
+    "passport": "^0.4.0",
+    "passport-http-bearer": "^1.0.1",
+    "pg": "^7.9.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^5.1.1",
+    "sequelize-cli": "^4.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.4.0",
+    "@babel/node": "^7.2.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
+    "eslint": "^5.15.3",
+    "nodemon": "^1.18.0"
+  }
+}

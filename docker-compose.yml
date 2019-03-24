@@ -1,0 +1,28 @@
+version: '3'
+services:
+  api:
+    build: api
+    ports:
+      - '3000:3000'
+      - '9229:9229'
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    environment:
+      PORT: 3000
+      PGHOST: db
+      PGUSER: postgres
+      PGDATABASE: transactical-dev
+      PGPASSWORD:
+      PGPORT: 5432
+      AUTH_SECRET: "m0n4l!s4"
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: transactical-dev
+    ports:
+      - '15432:5432'
