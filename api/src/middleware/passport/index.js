@@ -1,9 +1,9 @@
 import passport from 'passport';
 import bearerStrategy from './bearerStrategy';
-import githubStrategy from './githubStrategy';
+// import githubStrategy from './githubStrategy';
 
 passport.use(bearerStrategy);
-passport.use(githubStrategy);
+// passport.use(githubStrategy);
 
 passport.serializeUser((user, cb) => {
   console.log('DEBUG serializeUser', user);
