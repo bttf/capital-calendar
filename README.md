@@ -1,3 +1,3 @@
-# transaction calendar - "transactical"
+# capital calendar
 
 `docker-compose up`
