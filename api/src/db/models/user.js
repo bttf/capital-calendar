@@ -3,9 +3,6 @@ export default (sequelize, DataTypes) => {
     'User',
     {
       entityId: { type: DataTypes.STRING, field: 'entity_id' },
-      email: DataTypes.STRING,
-      username: DataTypes.STRING,
-      avatarUrl: { type: DataTypes.STRING, field: 'avatar_url' },
       createdAt: {
         type: DataTypes.DATE,
         field: 'created_at',
@@ -18,8 +15,8 @@ export default (sequelize, DataTypes) => {
   );
 
   User.associate = models => {
-    const { UserAuth } = models;
-    User.UserAuth = User.hasOne(UserAuth, { foreignKey: 'user_id', as: 'userAuth' });
+    const { GoogleAuth } = models;
+    User.GoogleAuth = User.hasOne(GoogleAuth, { foreignKey: 'user_id', as: 'googleAuth' });
   };
 
   User.findByEntityId = (entityId, options) => {
