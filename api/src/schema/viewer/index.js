@@ -10,7 +10,9 @@ export default new GraphQLObjectType({
   fields: {
     hello: {
       type: GraphQLString,
-      resolve: () => 'Hi',
+      resolve: () => {
+        return 'hello';
+      },
     },
     user: {
       type: new GraphQLNonNull(UserType),

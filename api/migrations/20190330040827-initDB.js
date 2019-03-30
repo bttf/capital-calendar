@@ -33,15 +33,18 @@ exports.up = function(db) {
     CREATE TABLE app.users (
       id SERIAL PRIMARY KEY,
       entity_id uuid NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
+      email TEXT NOT NULL,
       created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')
     );
+
+    CREATE UNIQUE INDEX app_users_email on app.users(LOWER(email));
 
     CREATE TABLE app.google_auths (
       id SERIAL PRIMARY KEY,
       entity_id uuid NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
       access_token TEXT,
       refresh_token TEXT,
-      user_id INTEGER REFERENCES app.users,
+      user_id INTEGER REFERENCES app.users ON DELETE CASCADE,
       created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc'),
       updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')
     );

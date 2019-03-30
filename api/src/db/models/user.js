@@ -3,6 +3,7 @@ export default (sequelize, DataTypes) => {
     'User',
     {
       entityId: { type: DataTypes.STRING, field: 'entity_id' },
+      email: { type: DataTypes.STRING, field: 'email' },
       createdAt: {
         type: DataTypes.DATE,
         field: 'created_at',

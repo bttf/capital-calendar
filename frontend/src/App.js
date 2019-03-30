@@ -1,41 +1,21 @@
-import React, { Component } from 'react';
-import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
-import './App.css';
+import React from 'react';
+import {
+  BrowserRouter,
+} from 'react-router-dom'
+import routes, { RouteRenderer } from './routes';
 
-const APP_QUERY = gql`
-  {
-    viewer {
-      hello
-    }
-  }
-`;
-
-class App extends Component {
+class App extends React.Component {
   render() {
-    const {
-      loading,
-      error,
-      data,
-    } = this.props;
-
-    if (loading) return 'Loading...';
-
-    if (error) return `Error: ${error}`;
-
-    console.log('data', data);
-    console.log('props', this.props);
-
     return (
-      <h1>{data.viewer.hello}</h1>
+      <BrowserRouter>
+        <div className="app-container">
+          {routes.map((route, i) => (
+            <RouteRenderer key={i} {...route} />
+          ))}
+        </div>
+      </BrowserRouter>
     );
   }
 }
 
-export default () => (
-  <Query query={APP_QUERY}>
-    {(props) => (
-      <App {...props} />
-    )}
-  </Query>
-)
+export default App;

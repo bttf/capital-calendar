@@ -1,9 +1,9 @@
 import { GraphQLObjectType } from 'graphql';
-import authWithGithub from './authWithGithub';
+import authWithGoogle from './authWithGoogle';
 
 export default new GraphQLObjectType({
   name: 'PublicMutation',
   fields: {
-    authWithGithub,
+    authWithGoogle,
   },
 });
