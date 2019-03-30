@@ -14,15 +14,18 @@ services:
       PORT: 3000
       PGHOST: db
       PGUSER: postgres
-      PGDATABASE: transactical-dev
+      PGDATABASE: capital-calendar-dev
       PGPASSWORD:
       PGPORT: 5432
       AUTH_SECRET: "m0n4l!s4"
+      GOOGLE_CLIENT_ID: "$CAPCAL_GOOGLE_CLIENT_ID"
+      GOOGLE_CLIENT_SECRET: "$CAPCAL_GOOGLE_CLIENT_SECRET"
+      GOOGLE_CALLBACK_URL: "http://localhost:8080/google"
   db:
     image: postgres
     environment:
       POSTGRES_PASSWORD:
       POSTGRES_USER: postgres
-      POSTGRES_DB: transactical-dev
+      POSTGRES_DB: capital-calendar-dev
     ports:
       - '15432:5432'
