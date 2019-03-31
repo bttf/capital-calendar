@@ -1,4 +1,5 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
+import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLList } from 'graphql';
+import CalendarType from '../calendar';
 
 export default new GraphQLObjectType({
   name: 'User',
@@ -8,6 +9,19 @@ export default new GraphQLObjectType({
     },
     createdAt: {
       type: new GraphQLNonNull(GraphQLString),
+    },
+    calendars: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(CalendarType))),
+      resolve: () => {
+        return [
+          {
+            name: 'Calendar #1',
+          },
+          {
+            name: 'Calendar #2',
+          },
+        ];
+      },
     },
   },
 });
