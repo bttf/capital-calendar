@@ -1,7 +1,7 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
 import { google } from 'googleapis';
 import db from '../../../db';
-import { generateToken, googleOAuthClient } from '../../../lib/auth';
+import { generateToken, genGoogleOAuthClient } from '../../../lib/auth';
 
 const AuthWithGooglePayloadType = new GraphQLObjectType({
   name: 'AuthWithGooglePayload',
@@ -20,6 +20,7 @@ export default {
   },
   resolve: async (_, { code }) => {
     let tokens;
+    const googleOAuthClient = genGoogleOAuthClient();
 
     try {
       ({ tokens } = await googleOAuthClient.getToken(code));
@@ -33,10 +34,7 @@ export default {
 
     let email;
     let user;
-    const {
-      access_token: accessToken,
-      refresh_token: refreshToken,
-    } = tokens;
+    const { access_token: accessToken, refresh_token: refreshToken } = tokens;
 
     try {
       email = await new Promise((resolve, reject) => {
@@ -51,7 +49,7 @@ export default {
       [user] = await db.User.findOrCreate({
         where: { email },
       });
-    } catch(e) {
+    } catch (e) {
       // eslint-disable-next-line
       console.error(e);
       return { errors: [{ message: 'An error occured' }], token: null };
@@ -64,10 +62,7 @@ export default {
     });
 
     return {
-      token: generateToken(
-        user.toJSON(),
-        '365d',
-      ),
+      token: generateToken(user.toJSON(), '365d'),
     };
   },
 };

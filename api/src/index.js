@@ -15,7 +15,10 @@ app.use(passport.initialize());
 app.use('/auth', authRoutes);
 app.use('/public/graphql', graphqlHTTP({ schema: publicSchema }));
 app.use('/graphql', bearerAuth, async (req, res, next) => {
-  const context = { viewer: { user: req.user } };
+  const context = {
+    googleAuth: req.googleAuth,
+    viewer: { user: req.user },
+  };
   return graphqlHTTP({
     schema,
     context,

@@ -1,4 +1,4 @@
-import { googleOAuthClient } from '../lib/auth';
+import { genGoogleOAuthClient } from '../lib/auth';
 import passport from '../middleware/passport';
 import db from '../db';
 
@@ -10,6 +10,7 @@ export default (req, res, next) => {
   passport.authenticate('bearer', async (err, decodedUser) => {
     if (err || !decodedUser) return unauthorizedResponse();
 
+    const googleOAuthClient = genGoogleOAuthClient();
     const user = await db.User.findByEntityId(decodedUser.entityId, {
       include: { association: db.User.GoogleAuth },
     });
@@ -33,7 +34,8 @@ export default (req, res, next) => {
       });
     });
 
-    req.user = user;
+    req.user = user.toJSON();
+    req.googleAuth = googleOAuthClient;
 
     next();
   })(req, res, next);
