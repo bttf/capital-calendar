@@ -13,12 +13,14 @@
     "googleapis": "^38.0.0",
     "graphql": "^14.1.1",
     "graphql-tag": "^2.10.1",
+    "node-sass": "^4.11.0",
     "query-string": "^6.4.0",
     "react": "^16.8.5",
     "react-apollo": "^2.5.3",
     "react-dom": "^16.8.5",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "2.1.8"
+    "react-scripts": "2.1.8",
+    "styled-components": "^4.2.0"
   },
   "scripts": {
     "start": "PORT=8080 BROWSER=none react-scripts start",
