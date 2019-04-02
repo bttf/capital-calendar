@@ -5,6 +5,7 @@ import schema from './schema';
 import publicSchema from './schema/publicSchema';
 import authRoutes from './routes/auth';
 import cors from 'cors';
+import { genGoogleOAuthClient } from './lib/auth';
 import bearerAuth from './middleware/bearerAuth';
 
 const PORT = process.env.PORT || 3000;
@@ -13,7 +14,13 @@ const app = express();
 app.use(cors());
 app.use(passport.initialize());
 app.use('/auth', authRoutes);
-app.use('/public/graphql', graphqlHTTP({ schema: publicSchema }));
+app.use('/public/graphql', async (req, res, next) => {
+  const context = { googleAuth: genGoogleOAuthClient() };
+  return graphqlHTTP({
+    context,
+    schema: publicSchema,
+  })(req, res, next);
+});
 app.use('/graphql', bearerAuth, async (req, res, next) => {
   const context = {
     googleAuth: req.googleAuth,
