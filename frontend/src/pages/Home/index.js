@@ -8,20 +8,39 @@ export default () => (
     query={gql`
       query {
         viewer {
-          user { email }
+          user {
+            email
+            calendars {
+              name
+            }
+          }
         }
       }
     `}
   >
-  {({ loading, error, data }) => {
-    if (loading) return 'Loading...';
+    {({ loading, error, data }) => {
+      if (loading) return 'Loading...';
 
-    return (
-      <div>
-        <h1>Welcome {data.viewer.user.email}</h1>
-        <button onClick={onLogout}>Log out</button>
-      </div>
-    );
-  }}
+      const viewer = data && data.viewer;
+      const { calendars } = viewer && viewer.user;
+
+      return (
+        <div>
+          <h1>Welcome {data.viewer.user.email}</h1>
+
+          <hr />
+
+          <h2>calendars</h2>
+
+          <ul>
+            {calendars.map((c, i) => (
+              <li key={i}>{c.name}</li>
+            ))}
+          </ul>
+
+          <button onClick={onLogout}>Log out</button>
+        </div>
+      );
+    }}
   </Query>
 );

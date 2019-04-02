@@ -1,8 +1,5 @@
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql';
-import {
-  googleScopes,
-  googleOAuthClient,
-} from '../../lib/auth';
+import { googleScopes } from '../../lib/auth';
 import mutation from './mutation';
 
 export default new GraphQLSchema({
@@ -12,8 +9,8 @@ export default new GraphQLSchema({
     fields: {
       googleAuthUrl: {
         type: GraphQLString,
-        resolve: () => {
-          const googleAuthUrl = googleOAuthClient.generateAuthUrl({
+        resolve: (_source, _args, { googleAuth }) => {
+          const googleAuthUrl = googleAuth.generateAuthUrl({
             // 'online' (default) or 'offline' (gets refresh_token)
             access_type: 'offline',
             scope: googleScopes,
