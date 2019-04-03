@@ -52,15 +52,15 @@ export default () => (
     </BulletPoint>
     <BulletPoint>
       <NumberBullet>2</NumberBullet>
-      Sign in with Plaid
-    </BulletPoint>
-    <BulletPoint>
-      <NumberBullet>3</NumberBullet>
       Pick and choose which bank accounts to monitor daily
     </BulletPoint>
     <BulletPoint>
+      <NumberBullet>3</NumberBullet>
+      Create one or many calendars for any bank accounts.
+    </BulletPoint>
+    <BulletPoint>
       <NumberBullet>4</NumberBullet>
-      See your new calendars in Google that display daily spending data!
+      Watch your spending data fill up the last 30 days and everyday thereafter!
     </BulletPoint>
   </StepsContainer>
 );
