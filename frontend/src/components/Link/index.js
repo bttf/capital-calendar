@@ -5,6 +5,11 @@ const Link = styled('a')`
   color: #697796;
   font-weight: 600;
   text-decoration: none;
+  cursor: pointer;
 `;
 
-export default ({ href, children }) => <Link href={href}>{children}</Link>;
+export default ({ onClick, href, children }) => (
+  <Link onClick={onClick} href={href}>
+    {children}
+  </Link>
+);

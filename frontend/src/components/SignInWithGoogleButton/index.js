@@ -1,5 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import gql from 'graphql-tag';
+import { Query } from 'react-apollo';
+
+import publicClient from '../../apollo/publicClient';
 
 const SignInWithGoogleButton = styled('button')`
   font-family: 'Arvo', serif;
@@ -32,8 +36,29 @@ const SignInWithGoogleButton = styled('button')`
 `;
 
 export default () => (
-  <SignInWithGoogleButton>
-    <img src="/g-logo.png" style={{ height: '48px', width: '48px' }} />
-    Sign in with Google
-  </SignInWithGoogleButton>
+  <Query
+    client={publicClient}
+    query={gql`
+      query {
+        googleAuthUrl
+      }
+    `}
+  >
+    {({ loading, error, data }) => {
+      const openURL = () => {
+        const url = data && data.googleAuthUrl;
+
+        if (url) {
+          window.location.href = url;
+        }
+      };
+
+      return (
+        <SignInWithGoogleButton onClick={openURL}>
+          <img src="/g-logo.png" style={{ height: '48px', width: '48px' }} />
+          Sign in with Google
+        </SignInWithGoogleButton>
+      );
+    }}
+  </Query>
 );
