@@ -2,7 +2,6 @@ import React from 'react';
 import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
-import TopNav from '../../components/TopNav';
 
 const HomeContainer = styled('div')`
   display: flex;
@@ -52,8 +51,6 @@ export default () => (
 
       return (
         <HomeContainer>
-          <TopNav />
-
           <PlaidContainer>
             <Title>Bank Accounts</Title>
           </PlaidContainer>

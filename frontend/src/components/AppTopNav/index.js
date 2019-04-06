@@ -41,7 +41,12 @@ export default () => (
     `}
   >
     {({ loading, error, data }) => {
-      if (loading) return 'Loading...';
+      if (loading) return null;
+
+      if (error) {
+        console.error('TopNav error', error);
+        return null;
+      }
 
       const viewer = data && data.viewer;
 

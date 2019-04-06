@@ -2,7 +2,9 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import routes, { RouteRenderer } from './routes';
+import AppTopNav from './components/AppTopNav';
 import CapitalCalendarBanner from './components/CapitalCalendarBanner';
+import { LOCAL_STORAGE_CAPCAL_TOKEN_PATH } from './constants';
 
 const AppContainer = styled('div')`
   display: flex;
@@ -23,10 +25,15 @@ const ContentContainer = styled('div')`
 
 class App extends React.Component {
   render() {
+    const isAuthenticated = !!window.localStorage.getItem(LOCAL_STORAGE_CAPCAL_TOKEN_PATH);
+
     return (
       <BrowserRouter>
         <AppContainer>
+          {isAuthenticated && <AppTopNav />}
+
           <CapitalCalendarBanner />
+
           <ContentContainer>
             {routes.map((route, i) => (
               <RouteRenderer key={i} {...route} />
