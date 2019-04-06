@@ -22,6 +22,9 @@ export default () => (
       if (loading) return 'Loading...';
 
       const viewer = data && data.viewer;
+
+      if (!viewer) return null;
+
       const { calendars } = viewer && viewer.user;
 
       return (

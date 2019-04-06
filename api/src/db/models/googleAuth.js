@@ -13,7 +13,11 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         field: 'updated_at',
       },
-      userId: { type: DataTypes.INTEGER, field: 'user_id' },
+      userId: {
+        type: DataTypes.INTEGER,
+        field: 'user_id',
+        unique: true,
+      },
     },
     {
       schema: 'app',

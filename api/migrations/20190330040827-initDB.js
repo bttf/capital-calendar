@@ -7,9 +7,9 @@ var seed;
 /* eslint-enable */
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
 exports.setup = function(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -49,7 +49,7 @@ exports.up = function(db) {
       updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')
     );
 
-    CREATE INDEX app_google_auths_user_id_fkey ON app.google_auths(user_id);
+    CREATE UNIQUE INDEX app_google_auths_user_id_fkey ON app.google_auths(user_id);
 
     CREATE TRIGGER update_topic_modtime
     BEFORE UPDATE ON app.google_auths FOR EACH ROW EXECUTE PROCEDURE app.update_modified_column();
