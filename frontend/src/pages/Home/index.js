@@ -1,7 +1,35 @@
 import React from 'react';
 import gql from 'graphql-tag';
+import styled from 'styled-components';
 import { Query } from 'react-apollo';
-import onLogout from '../../apollo/onLogout';
+import TopNav from '../../components/TopNav';
+
+const HomeContainer = styled('div')`
+  display: flex;
+`;
+
+const Title = styled('div')`
+  font-family: 'Arvo', serif;
+  color: #808080;
+  font-size: 24px;
+  padding: 0 16px;
+`;
+
+const PlaidContainer = styled('div')`
+  display: flex;
+  justify-content: center;
+
+  flex: 1;
+  height: 400px;
+`;
+
+const GoogleContainer = styled('div')`
+  display: flex;
+  justify-content: center;
+
+  flex: 1;
+  height: 400px;
+`;
 
 export default () => (
   <Query
@@ -10,9 +38,6 @@ export default () => (
         viewer {
           user {
             email
-            calendars {
-              name
-            }
           }
         }
       }
@@ -25,24 +50,18 @@ export default () => (
 
       if (!viewer) return null;
 
-      const { calendars } = viewer && viewer.user;
-
       return (
-        <div>
-          <h1>Welcome {data.viewer.user.email}</h1>
+        <HomeContainer>
+          <TopNav />
 
-          <hr />
+          <PlaidContainer>
+            <Title>Bank Accounts</Title>
+          </PlaidContainer>
 
-          <h2>calendars</h2>
-
-          <ul>
-            {calendars.map((c, i) => (
-              <li key={i}>{c.name}</li>
-            ))}
-          </ul>
-
-          <button onClick={onLogout}>Log out</button>
-        </div>
+          <GoogleContainer>
+            <Title>Google Calendar</Title>
+          </GoogleContainer>
+        </HomeContainer>
       );
     }}
   </Query>
