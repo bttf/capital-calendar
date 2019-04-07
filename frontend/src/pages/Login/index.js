@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Link from '../../components/Link';
 import Modal from '../../components/Modal';
 import SignInWithGoogleButton from '../../components/SignInWithGoogleButton';
-import StepsForSuccess from '../../components/StepsForSuccess';
+import StepsForSuccess from './StepsForSuccess';
 
 const LoginContainer = styled('div')`
   display: flex;

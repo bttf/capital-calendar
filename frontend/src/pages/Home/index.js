@@ -1,7 +1,31 @@
 import React from 'react';
 import gql from 'graphql-tag';
+import styled from 'styled-components';
 import { Query } from 'react-apollo';
-import onLogout from '../../apollo/onLogout';
+import CreateCalendarCard from './CreateCalendarCard';
+import CalendarBlockingOverlay from './CalendarBlockingOverlay';
+
+const HomeContainer = styled('div')`
+  display: flex;
+`;
+
+const Title = styled('div')`
+  font-family: 'Arvo', serif;
+  color: #808080;
+  font-size: 24px;
+  padding: 0 16px;
+  margin-bottom: 32px;
+`;
+
+const ItemContainer = styled('div')`
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+`;
 
 export default () => (
   <Query
@@ -10,9 +34,6 @@ export default () => (
         viewer {
           user {
             email
-            calendars {
-              name
-            }
           }
         }
       }
@@ -22,24 +43,21 @@ export default () => (
       if (loading) return 'Loading...';
 
       const viewer = data && data.viewer;
-      const { calendars } = viewer && viewer.user;
+
+      if (!viewer) return null;
 
       return (
-        <div>
-          <h1>Welcome {data.viewer.user.email}</h1>
+        <HomeContainer>
+          <ItemContainer>
+            <Title>Bank Accounts</Title>
+          </ItemContainer>
 
-          <hr />
-
-          <h2>calendars</h2>
-
-          <ul>
-            {calendars.map((c, i) => (
-              <li key={i}>{c.name}</li>
-            ))}
-          </ul>
-
-          <button onClick={onLogout}>Log out</button>
-        </div>
+          <ItemContainer>
+            <Title>Google Calendar</Title>
+            <CreateCalendarCard />
+            <CalendarBlockingOverlay />
+          </ItemContainer>
+        </HomeContainer>
       );
     }}
   </Query>
