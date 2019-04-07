@@ -2,11 +2,13 @@ import React from 'react';
 import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
+import Text from '../../components/Text';
 import CreateCalendarCard from './CreateCalendarCard';
 import CalendarBlockingOverlay from './CalendarBlockingOverlay';
 
-const HomeContainer = styled('div')`
+export const HomeContainer = styled('div')`
   display: flex;
+  justify-content: center;
 `;
 
 const Title = styled('div')`
@@ -40,7 +42,14 @@ export default () => (
     `}
   >
     {({ loading, error, data }) => {
-      if (loading) return 'Loading...';
+      if (loading)
+        return (
+          <HomeContainer>
+            <Text color="#808080" font="'Arvo', serif" size={48}>
+              Loading...
+            </Text>
+          </HomeContainer>
+        );
 
       const viewer = data && data.viewer;
 
