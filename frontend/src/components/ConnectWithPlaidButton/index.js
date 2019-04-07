@@ -1,7 +1,8 @@
 import React from 'react';
+import gql from 'graphql-tag';
+import { Mutation } from 'react-apollo';
 import styled from 'styled-components';
 import PlaidLink from 'react-plaid-link';
-import { SignInWithGoogleButton } from '../SignInWithGoogleButton';
 import { PLAID_PUBLIC_KEY } from '../../constants';
 
 const ConnectWithPlaidButton = styled(PlaidLink)`
@@ -35,16 +36,37 @@ const ConnectWithPlaidButton = styled(PlaidLink)`
   }
 `;
 
+const CREATE_PLAID_ITEM = gql`
+  mutation CreatePlaidItem($publicToken: String!) {
+    createPlaidItem(publicToken: $publicToken) {
+      status
+    }
+  }
+`;
+
 export default () => (
-  <ConnectWithPlaidButton
-    clientName="Capital Calendar"
-    env="sandbox"
-    product={['transactions']}
-    publicKey={PLAID_PUBLIC_KEY}
-    onExit={() => {}}
-    onSuccess={() => {}}
-  >
-    Connect with
-    <img alt="Plaid logo" src="/plaid-logo.svg" />
-  </ConnectWithPlaidButton>
+  <Mutation mutation={CREATE_PLAID_ITEM}>
+    {(createPlaidItem, { called, data, loading }) => {
+      return (
+        <ConnectWithPlaidButton
+          clientName="Capital Calendar"
+          env="sandbox"
+          product={['transactions']}
+          publicKey={PLAID_PUBLIC_KEY}
+          onExit={() => {}}
+          onSuccess={(publicToken, metadata) => {
+            console.log('onSuccess: metadata', metadata);
+            createPlaidItem({
+              variables: {
+                publicToken,
+              },
+            });
+          }}
+        >
+          Connect with
+          <img alt="Plaid logo" src="/plaid-logo.svg" />
+        </ConnectWithPlaidButton>
+      );
+    }}
+  </Mutation>
 );
