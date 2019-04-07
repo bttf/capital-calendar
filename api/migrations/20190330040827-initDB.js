@@ -44,7 +44,7 @@ exports.up = function(db) {
       entity_id uuid NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
       access_token TEXT,
       refresh_token TEXT,
-      user_id INTEGER REFERENCES app.users ON DELETE CASCADE,
+      user_id INTEGER NOT NULL REFERENCES app.users ON DELETE CASCADE,
       created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc'),
       updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')
     );
@@ -55,21 +55,33 @@ exports.up = function(db) {
     BEFORE UPDATE ON app.google_auths FOR EACH ROW EXECUTE PROCEDURE app.update_modified_column();
 
     CREATE TABLE app.plaid_items (
-      id SERIAL PRIMARY KEY,
-      entity_id uuid NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
-      item_id TEXT,
-      access_token TEXT,
-      user_id INTEGER REFERENCES app.users ON DELETE CASCADE,
+      item_id TEXT PRIMARY KEY,
+      access_token TEXT NOT NULL,
+      user_id INTEGER NOT NULL REFERENCES app.users ON DELETE CASCADE,
       created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc'),
-      updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc'),
-      UNIQUE(item_id, user_id)
+      updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')
     );
 
     CREATE INDEX app_plaid_items_user_id_fkey ON app.plaid_items(user_id);
-    CREATE INDEX app_plaid_items_item_id_fkey ON app.plaid_items(item_id);
 
     CREATE TRIGGER update_topic_modtime
     BEFORE UPDATE ON app.plaid_items FOR EACH ROW EXECUTE PROCEDURE app.update_modified_column();
+
+    CREATE TABLE app.plaid_accounts (
+      account_id TEXT PRIMARY KEY,
+      name TEXT,
+      official_name TEXT,
+      mask TEXT,
+      subtype TEXT,
+      plaid_item_id TEXT NOT NULL REFERENCES app.plaid_items ON DELETE CASCADE,
+      created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc'),
+      updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')
+    );
+    
+    CREATE INDEX app_plaid_accounts_item_id_fkey ON app.plaid_accounts(plaid_item_id);
+    
+    CREATE TRIGGER update_topic_modtime
+    BEFORE UPDATE ON app.plaid_accounts FOR EACH ROW EXECUTE PROCEDURE app.update_modified_column();
   `;
   return db.runSql(sql);
 };

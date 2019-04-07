@@ -2,11 +2,10 @@ export default (sequelize, DataTypes) => {
   const PlaidItem = sequelize.define(
     'PlaidItem',
     {
-      entityId: { type: DataTypes.STRING, field: 'entity_id' },
       itemId: {
         type: DataTypes.STRING,
         field: 'item_id',
-        unique: true,
+        primaryKey: true,
       },
       accessToken: { type: DataTypes.STRING, field: 'access_token' },
       createdAt: {

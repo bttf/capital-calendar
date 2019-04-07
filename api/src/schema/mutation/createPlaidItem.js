@@ -37,15 +37,51 @@ export default {
     //  - user_id
     //  - item_id
     //  - access_token
-    await db.PlaidItem.upsert({
-      itemId,
-      accessToken,
-      userId: viewer.user.id,
-    });
+    try {
+      await db.PlaidItem.upsert({
+        itemId,
+        accessToken,
+        userId: viewer.user.id,
+      });
+    } catch (e) {
+      // eslint-disable-next-line
+      console.error('Error', e);
+      return {
+        errors: ['Error creating item'],
+      };
+    }
 
-    //  TODO: background jobs
+    // Get and create accounts
+    let accounts = [];
+    try {
+      ({ accounts } = await plaidClient.getAccounts(accessToken));
+    } catch (e) {
+      // eslint-disable-next-line
+      console.error('Error', e);
+      return {
+        errors: ['Error fetching accounts'],
+      };
+    }
 
-    // Return OK
+    try {
+      await db.PlaidAccount.bulkCreate(
+        accounts.map(a => ({
+          accountId: a.account_id,
+          name: a.name,
+          officialName: a.official_name,
+          mask: a.mask,
+          subtype: a.subtype,
+          plaidItemId: itemId,
+        })),
+      );
+    } catch (e) {
+      // eslint-disable-next-line
+      console.error('Error', e);
+      return {
+        errors: ['Error creating accounts'],
+      };
+    }
+
     return {
       status: 'OK',
     };
