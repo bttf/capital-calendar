@@ -3,12 +3,14 @@ import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
 import Text from '../../components/Text';
+import ConnectWithPlaidButton from '../../components/ConnectWithPlaidButton';
 import CreateCalendarCard from './CreateCalendarCard';
 import CalendarBlockingOverlay from './CalendarBlockingOverlay';
 
 export const HomeContainer = styled('div')`
   display: flex;
   justify-content: center;
+  align-items: flex-start;
 `;
 
 const Title = styled('div')`
@@ -59,6 +61,8 @@ export default () => (
         <HomeContainer>
           <ItemContainer>
             <Title>Bank Accounts</Title>
+
+            <ConnectWithPlaidButton />
           </ItemContainer>
 
           <ItemContainer>
