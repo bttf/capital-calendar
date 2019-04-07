@@ -21,6 +21,7 @@ const AppContainer = styled('div')`
 const ContentContainer = styled('div')`
   margin-top: 32px;
   width: 100%;
+  min-height: 360px;
 `;
 
 class App extends React.Component {

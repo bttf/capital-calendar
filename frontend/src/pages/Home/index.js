@@ -2,6 +2,8 @@ import React from 'react';
 import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
+import CreateCalendarCard from './CreateCalendarCard';
+import CalendarBlockingOverlay from './CalendarBlockingOverlay';
 
 const HomeContainer = styled('div')`
   display: flex;
@@ -12,22 +14,17 @@ const Title = styled('div')`
   color: #808080;
   font-size: 24px;
   padding: 0 16px;
+  margin-bottom: 32px;
 `;
 
-const PlaidContainer = styled('div')`
+const ItemContainer = styled('div')`
+  position: relative;
+
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-
   flex: 1;
-  height: 400px;
-`;
-
-const GoogleContainer = styled('div')`
-  display: flex;
-  justify-content: center;
-
-  flex: 1;
-  height: 400px;
 `;
 
 export default () => (
@@ -51,13 +48,15 @@ export default () => (
 
       return (
         <HomeContainer>
-          <PlaidContainer>
+          <ItemContainer>
             <Title>Bank Accounts</Title>
-          </PlaidContainer>
+          </ItemContainer>
 
-          <GoogleContainer>
+          <ItemContainer>
             <Title>Google Calendar</Title>
-          </GoogleContainer>
+            <CreateCalendarCard />
+            <CalendarBlockingOverlay />
+          </ItemContainer>
         </HomeContainer>
       );
     }}

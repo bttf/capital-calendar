@@ -6,6 +6,7 @@ import { onError } from 'apollo-link-error';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
 import { LOCAL_STORAGE_CAPCAL_TOKEN_PATH } from '../constants';
+import onLogout from './onLogout';
 
 const httpLink = new HttpLink({
   uri: 'http://localhost:3000/graphql',
@@ -18,7 +19,7 @@ const authLink = setContext((request, prevContext) => {
     headers: {
       ...prevContext.headers,
       authorization: token ? `Bearer ${token}` : '',
-    }
+    },
   };
 });
 
@@ -28,18 +29,16 @@ const authLink = setContext((request, prevContext) => {
  */
 const errorLink = onError(({ graphQLErrors, networkErrors }) => {
   if (graphQLErrors) {
-    const isUnauthorized =
-      (graphQLErrors && graphQLErrors.some(e => e.message === 'Unauthorized'));
+    const isUnauthorized = graphQLErrors && graphQLErrors.some(e => e.message === 'Unauthorized');
 
-    // Redirect to login page if unauthorized
+    // Log out and redirect to login page if unauthorized
     if (isUnauthorized) {
+      onLogout();
       window.location.href = '/login';
     }
 
     graphQLErrors.map(({ message, locations, path }) =>
-      console.log(
-        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-      )
+      console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`),
     );
   }
 
