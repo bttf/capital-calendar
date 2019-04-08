@@ -58,6 +58,7 @@ exports.up = function(db) {
       item_id TEXT PRIMARY KEY,
       access_token TEXT NOT NULL,
       user_id INTEGER NOT NULL REFERENCES app.users ON DELETE CASCADE,
+      institution_id TEXT,
       created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc'),
       updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')
     );
@@ -77,9 +78,9 @@ exports.up = function(db) {
       created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc'),
       updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')
     );
-    
+
     CREATE INDEX app_plaid_accounts_item_id_fkey ON app.plaid_accounts(plaid_item_id);
-    
+
     CREATE TRIGGER update_topic_modtime
     BEFORE UPDATE ON app.plaid_accounts FOR EACH ROW EXECUTE PROCEDURE app.update_modified_column();
   `;

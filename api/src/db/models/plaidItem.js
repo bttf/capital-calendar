@@ -8,6 +8,10 @@ export default (sequelize, DataTypes) => {
         primaryKey: true,
       },
       accessToken: { type: DataTypes.STRING, field: 'access_token' },
+      institutionId: {
+        type: DataTypes.STRING,
+        field: 'institution_id',
+      },
       createdAt: {
         type: DataTypes.DATE,
         field: 'created_at',
