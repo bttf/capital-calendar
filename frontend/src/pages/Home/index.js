@@ -3,6 +3,8 @@ import gql from 'graphql-tag';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
 import Text from '../../components/Text';
+import ItemCard from '../../components/ItemCard';
+import BankAccountCard from '../../components/BankAccountCard';
 import ConnectWithPlaidButton from '../../components/ConnectWithPlaidButton';
 import CreateCalendarCard from './CreateCalendarCard';
 import CalendarBlockingOverlay from './CalendarBlockingOverlay';
@@ -19,6 +21,13 @@ const Title = styled('div')`
   font-size: 24px;
   padding: 0 16px;
   margin-bottom: 32px;
+`;
+
+const TitleSmallLink = styled('span')`
+  cursor: pointer;
+  font-size: 14px;
+  font-family: 'Arvo', serif;
+  color: #808080;
 `;
 
 const ItemContainer = styled('div')`
@@ -38,6 +47,14 @@ export default () => (
         viewer {
           user {
             email
+            accounts {
+              name
+              mask
+              institution {
+                logo
+                primaryColor
+              }
+            }
           }
         }
       }
@@ -57,12 +74,26 @@ export default () => (
 
       if (!viewer) return null;
 
+      const { user } = viewer;
+      const { accounts } = user;
+
       return (
         <HomeContainer>
           <ItemContainer>
-            <Title>Bank Accounts</Title>
+            <Title>
+              Bank Accounts {!!accounts.length && <TitleSmallLink>(Add new)</TitleSmallLink>}
+            </Title>
 
-            <ConnectWithPlaidButton />
+            {!accounts.length && <ConnectWithPlaidButton />}
+
+            {!!accounts.length &&
+              accounts.map(account => (
+                <BankAccountCard
+                  name={account.name}
+                  logo={account.institution.logo}
+                  primaryColor={account.institution.primaryColor}
+                />
+              ))}
           </ItemContainer>
 
           <ItemContainer>
