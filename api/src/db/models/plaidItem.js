@@ -8,9 +8,9 @@ export default (sequelize, DataTypes) => {
         primaryKey: true,
       },
       accessToken: { type: DataTypes.STRING, field: 'access_token' },
-      institutionId: {
+      plaidInstitutionId: {
         type: DataTypes.STRING,
-        field: 'institution_id',
+        field: 'plaid_institution_id',
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -32,7 +32,13 @@ export default (sequelize, DataTypes) => {
   );
 
   PlaidItem.associate = models => {
-    const { User } = models;
+    const { PlaidInstitution, User } = models;
+
+    PlaidItem.PlaidInstitution = PlaidItem.belongsTo(PlaidInstitution, {
+      foreignKey: 'plaid_institution_id',
+      as: 'plaidInstitution',
+    });
+
     PlaidItem.User = PlaidItem.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
   };
 

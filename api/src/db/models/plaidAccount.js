@@ -14,9 +14,17 @@ export default (sequelize, DataTypes) => {
       },
       mask: { type: DataTypes.STRING },
       subtype: { type: DataTypes.STRING },
+      userId: {
+        type: DataTypes.INTEGER,
+        field: 'user_id',
+      },
       plaidItemId: {
         type: DataTypes.STRING,
         field: 'plaid_item_id',
+      },
+      plaidInstitutionId: {
+        type: DataTypes.STRING,
+        field: 'plaid_institution_id',
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -34,10 +42,21 @@ export default (sequelize, DataTypes) => {
   );
 
   PlaidAccount.associate = models => {
-    const { PlaidItem } = models;
+    const { PlaidInstitution, PlaidItem, User } = models;
+
+    PlaidAccount.PlaidInstitution = PlaidAccount.belongsTo(PlaidInstitution, {
+      foreignKey: 'plaid_institution_id',
+      as: 'plaidInstitution',
+    });
+
     PlaidAccount.PlaidItem = PlaidAccount.belongsTo(PlaidItem, {
       foreignKey: 'plaid_item_id',
       as: 'plaidItem',
+    });
+
+    PlaidAccount.User = PlaidAccount.belongsTo(User, {
+      foreignKey: 'user_id',
+      as: 'user',
     });
   };
 

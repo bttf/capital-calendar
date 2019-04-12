@@ -1,6 +1,6 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLList } from 'graphql';
-import { google } from 'googleapis';
-import CalendarType from '../calendar';
+import { GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
+import AccountsType from '../account';
+import db from '../../db';
 
 export default new GraphQLObjectType({
   name: 'User',
@@ -11,13 +11,14 @@ export default new GraphQLObjectType({
     createdAt: {
       type: new GraphQLNonNull(GraphQLString),
     },
-    calendars: {
-      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(CalendarType))),
-      resolve: async (_source, _args, { googleAuth }) => {
-        const calendarAPI = google.calendar({ version: 'v3', auth: googleAuth });
-        const response = await calendarAPI.calendarList.list();
-        const calendarNames = (response.data.items || []).map(i => i.summary);
-        return calendarNames.map(n => ({ name: n }));
+    accounts: {
+      type: new GraphQLList(AccountsType),
+      resolve: user => {
+        return db.PlaidAccount.findAll({
+          where: {
+            userId: user.id,
+          },
+        });
       },
     },
   },

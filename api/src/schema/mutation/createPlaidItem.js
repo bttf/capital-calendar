@@ -1,7 +1,5 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
-import plaid from 'plaid';
 import db from '../../db';
-const { PLAID_CLIENT_ID, PLAID_SECRET, PLAID_PUBLIC_KEY } = process.env;
 
 const CreatePlaidItemPayloadType = new GraphQLObjectType({
   name: 'CreatePlaidItemPayload',
@@ -20,14 +18,7 @@ export default {
   args: {
     publicToken: { type: new GraphQLNonNull(GraphQLString) },
   },
-  resolve: async (_, { publicToken }, { viewer }) => {
-    const plaidClient = new plaid.Client(
-      PLAID_CLIENT_ID,
-      PLAID_SECRET,
-      PLAID_PUBLIC_KEY,
-      plaid.environments.sandbox,
-    );
-
+  resolve: async (_, { publicToken }, { plaidClient, viewer }) => {
     // Get access token
     // Upsert to: users_plaid_items
     //  - user_id
@@ -62,7 +53,9 @@ export default {
             officialName: a.official_name,
             mask: a.mask,
             subtype: a.subtype,
+            userId: viewer.user.id,
             plaidItemId: itemId,
+            plaidInstitutionId: institutionId,
           })),
           { transaction },
         );

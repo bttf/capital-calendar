@@ -54,11 +54,20 @@ exports.up = function(db) {
     CREATE TRIGGER update_topic_modtime
     BEFORE UPDATE ON app.google_auths FOR EACH ROW EXECUTE PROCEDURE app.update_modified_column();
 
+    CREATE TABLE app.plaid_institutions (
+      institution_id TEXT PRIMARY KEY,
+      name TEXT,
+      logo TEXT,
+      primary_color TEXT,
+      url TEXT,
+      created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')
+    );
+
     CREATE TABLE app.plaid_items (
       item_id TEXT PRIMARY KEY,
       access_token TEXT NOT NULL,
       user_id INTEGER NOT NULL REFERENCES app.users ON DELETE CASCADE,
-      institution_id TEXT,
+      plaid_institution_id TEXT,
       created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc'),
       updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')
     );
@@ -74,12 +83,15 @@ exports.up = function(db) {
       official_name TEXT,
       mask TEXT,
       subtype TEXT,
+      user_id INTEGER NOT NULL REFERENCES app.users ON DELETE CASCADE,
+      plaid_institution_id TEXT,
       plaid_item_id TEXT NOT NULL REFERENCES app.plaid_items ON DELETE CASCADE,
       created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc'),
       updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')
     );
 
     CREATE INDEX app_plaid_accounts_item_id_fkey ON app.plaid_accounts(plaid_item_id);
+    CREATE INDEX app_plaid_accounts_user_id_fkey ON app.plaid_accounts(user_id);
 
     CREATE TRIGGER update_topic_modtime
     BEFORE UPDATE ON app.plaid_accounts FOR EACH ROW EXECUTE PROCEDURE app.update_modified_column();
