@@ -27,6 +27,7 @@ export default (sequelize, DataTypes) => {
 
   PlaidInstitution.associate = models => {
     const { PlaidItem } = models;
+
     PlaidInstitution.PlaidItem = PlaidInstitution.hasMany(PlaidItem, {
       foreignKey: 'plaid_institution_id',
       as: 'plaidItem',

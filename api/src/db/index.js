@@ -2,43 +2,34 @@ import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
 
-const {
-  PGDATABASE,
-  PGUSER,
-  PGPASSWORD,
-  PGHOST,
-  PGPORT,
-} = process.env;
+const { PGDATABASE, PGUSER, PGPASSWORD, PGHOST, PGPORT } = process.env;
 
-const sequelize = new Sequelize(
-  PGDATABASE,
-  PGUSER,
-  PGPASSWORD,
-  {
-    host: PGHOST,
-    post: PGPORT,
-    dialect: 'postgres',
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
-    },
-    define: {
-      timestamps: false,
-    },
-  });
+const sequelize = new Sequelize(PGDATABASE, PGUSER, PGPASSWORD, {
+  host: PGHOST,
+  post: PGPORT,
+  dialect: 'postgres',
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000,
+  },
+  define: {
+    timestamps: false,
+  },
+});
 
 const db = {};
+const modelsDirPath = path.resolve(__dirname, 'models');
 
-fs.readdirSync(path.resolve(__dirname, 'models'))
-  .filter(file => file.indexOf('.') !== 0)
-  .forEach(file => {
-    const model = sequelize.import(path.join(__dirname, 'models', file));
+fs.readdirSync(modelsDirPath)
+  .filter(filename => filename.indexOf('.') !== 0)
+  .forEach(filename => {
+    const model = sequelize.import(path.join(modelsDirPath, filename));
     db[model.name] = model;
   });
 
-Object.keys(db).map(modelName => {
+Object.keys(db).forEach(modelName => {
   const model = db[modelName];
 
   if (typeof model.initialize === 'function') {
