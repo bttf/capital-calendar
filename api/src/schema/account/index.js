@@ -1,7 +1,5 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
 import InstitutionType from '../institution';
-import createInstitution from '../../lib/institution/createInstitution';
-import db from '../../db';
 
 export default new GraphQLObjectType({
   name: 'Account',
@@ -15,20 +13,8 @@ export default new GraphQLObjectType({
     updatedAt: { type: GraphQLString },
     institution: {
       type: InstitutionType,
-      resolve: async account => {
-        // TODO Use dataloader
-        const institutionId = account.plaidInstitutionId;
-
-        let institution = await db.PlaidInstitution.findOne({
-          where: { institutionId },
-        });
-
-        if (!institution) {
-          institution = await createInstitution(institutionId);
-        }
-
-        return institution;
-      },
+      resolve: (account, _args, { loaders }) =>
+        loaders.findOrCreateInstitutionById.load(account.plaidInstitutionId),
     },
   },
 });
