@@ -2,6 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import ItemCard from '../ItemCard';
 
+const AccountCardContainer = styled(ItemCard).attrs(({ primaryColor }) => ({
+  background: `linear-gradient(360deg, ${primaryColor} 0%, #FFFFFF 100%)`,
+}))`
+  height: 50px;
+  margin-bottom: 24px;
+`;
+
 const ItemCardInner = styled('div')`
   flex: 1;
   display: flex;
@@ -28,13 +35,13 @@ const AccountName = styled('div')`
 
 export default ({ logo, primaryColor, name }) => {
   return (
-    <ItemCard background={`linear-gradient(360deg, ${primaryColor} 0%, #FFFFFF 100%)`}>
+    <AccountCardContainer primaryColor={primaryColor}>
       <ItemCardInner>
         <img src={`data:image/png;base64,${logo}`} alt="Logo" />
         <ItemCardDetails>
           <AccountName>{name}</AccountName>
         </ItemCardDetails>
       </ItemCardInner>
-    </ItemCard>
+    </AccountCardContainer>
   );
 };

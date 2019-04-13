@@ -1,6 +1,6 @@
 import React from 'react';
-import ItemCard from '../../../components/ItemCard';
-import Text from '../../../components/Text';
+import ItemCard from '../../../../components/ItemCard';
+import Text from '../../../../components/Text';
 
 export default () => (
   <ItemCard isDashedBorder background="transparent">

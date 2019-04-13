@@ -22,6 +22,10 @@ const ContentContainer = styled('div')`
   margin-top: 32px;
   width: 100%;
   min-height: 360px;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 `;
 
 class App extends React.Component {
