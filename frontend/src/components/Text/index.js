@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const TextContainer = styled('span')`
+export const TextContainer = styled('span')`
   font-family: ${p => (p.font ? p.font : `'Open Sans', sans-serif`)};
   font-size: ${p => (p.size ? p.size : 14)}px;
   color: ${p => (p.color ? p.color : 'black')};

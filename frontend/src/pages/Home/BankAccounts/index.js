@@ -1,7 +1,11 @@
 import React from 'react';
+import { Query } from 'react-apollo';
+import gql from 'graphql-tag';
 import styled from 'styled-components';
 
 import ConnectWithPlaidButton from '../../../components/ConnectWithPlaidButton';
+import AccountsPaginator from './AccountsPaginator';
+import AccountsList from './AccountsList';
 
 export const ItemContainer = styled('div')`
   position: relative;
@@ -23,10 +27,36 @@ export const Title = styled('div')`
 
 export default () => {
   return (
-    <ItemContainer>
-      <Title>Bank Accounts</Title>
+    <Query query={USER_QUERY}>
+      {({ loading, error, data }) => {
+        if (loading) return 'Loading...';
 
-      <ConnectWithPlaidButton />
-    </ItemContainer>
+        const hasAccounts = !!data.viewer.user.accounts.length;
+
+        return (
+          <ItemContainer>
+            <Title>Bank Accounts</Title>
+
+            <AccountsPaginator>
+              {accounts => <AccountsList accounts={accounts} />}
+            </AccountsPaginator>
+
+            {!hasAccounts && <ConnectWithPlaidButton hasAccounts={hasAccounts} />}
+          </ItemContainer>
+        );
+      }}
+    </Query>
   );
 };
+
+const USER_QUERY = gql`
+  query {
+    viewer {
+      user {
+        accounts(limit: 1) {
+          name
+        }
+      }
+    }
+  }
+`;

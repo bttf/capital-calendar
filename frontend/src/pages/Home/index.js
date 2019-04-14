@@ -1,6 +1,6 @@
 import React from 'react';
-import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
+import gql from 'graphql-tag';
 
 import BankAccounts from './BankAccounts';
 import Calendars from './Calendars';
@@ -20,9 +20,6 @@ export default () => (
 
       if (!viewer) return null;
 
-      // const { user } = viewer;
-      // const { accounts } = user;
-
       return (
         <React.Fragment>
           <BankAccounts />
@@ -38,14 +35,6 @@ const HOME_QUERY = gql`
     viewer {
       user {
         email
-        accounts {
-          name
-          mask
-          institution {
-            logo
-            primaryColor
-          }
-        }
       }
     }
   }

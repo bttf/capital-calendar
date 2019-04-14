@@ -10,7 +10,7 @@ const ConnectWithPlaidButton = styled(PlaidLink)`
   font-size: 27px;
 
   height: 70px;
-  width: 375px;
+  width: 360px;
 
   display: flex;
   align-items: center;
@@ -44,7 +44,7 @@ const CREATE_PLAID_ITEM = gql`
   }
 `;
 
-export default () => (
+export default ({ hasAccounts }) => (
   <Mutation mutation={CREATE_PLAID_ITEM}>
     {(createPlaidItem, { called, data, loading }) => {
       return (
@@ -63,8 +63,14 @@ export default () => (
             });
           }}
         >
-          Connect with
-          <img alt="Plaid logo" src="/plaid-logo.svg" />
+          {hasAccounts ? (
+            '+ Add another'
+          ) : (
+            <span>
+              Connect with
+              <img alt="Plaid logo" src="/plaid-logo.svg" />
+            </span>
+          )}
         </ConnectWithPlaidButton>
       );
     }}

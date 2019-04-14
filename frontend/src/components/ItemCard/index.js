@@ -1,25 +1,75 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const ItemCardContainer = styled('div')`
-  height: 100px;
+export const ItemCardContainer = styled('div')`
+  height: 70px;
   width: 360px;
 
-  background: ${p =>
-    p.background ? p.background : 'linear-gradient(360deg, #F4F4F4 0%, #FFFFFF 100%)'};
+  margin-bottom: 16px;
 
-  ${p =>
-    p.isDashedBorder ? '' : 'box-shadow:  0px 1px 4px rgba(0, 0, 0, 0.25);'} border-radius: 16px;
+  background: ${p => (p.background ? p.background : 'white')};
+
+  ${p => {
+    if (p.isDashedBorder) return '';
+
+    return `
+      box-shadow:  0px 1px 4px 0 rgba(0, 0, 0, 0.25);
+
+      &:hover {
+        box-shadow:  0px 2px 10px 0 rgba(0, 0, 0, 0.25);
+        transform: scale(1.05);
+      }
+    `;
+  }} border-radius: 8px;
 
   ${p => (p.isDashedBorder ? 'border: 3px dashed #697796;' : '')} display: flex;
   align-items: center;
   justify-content: center;
+
+  ${p =>
+    p.isInTheEther
+      ? `
+    opacity: 0;
+    transform: scale(1.1);
+    box-shadow:  0px 2px 10px 0 rgba(0, 0, 0, 0.25);
+  `
+      : `
+    opacity: 1;
+    transform: scale(1);
+  `} ${p =>
+    p.borderLeft
+      ? `
+    border-left: 4px solid ${p.borderLeft};
+  `
+      : ''}
+
+  transition: all 500ms;
 `;
 
-export default ({ background, isDashedBorder, children }) => {
-  return (
-    <ItemCardContainer background={background} isDashedBorder={isDashedBorder}>
-      {children}
-    </ItemCardContainer>
-  );
-};
+export default class ItemCard extends React.Component {
+  state = { isInTheEther: true };
+
+  componentDidMount() {
+    const { index = 0 } = this.props;
+
+    setTimeout(() => {
+      this.setState({ isInTheEther: false });
+    }, 100 * (index + 1));
+  }
+
+  render() {
+    const { background, borderLeft, isDashedBorder, children } = this.props;
+    const { isInTheEther } = this.state;
+
+    return (
+      <ItemCardContainer
+        isInTheEther={isInTheEther}
+        borderLeft={borderLeft}
+        background={background}
+        isDashedBorder={isDashedBorder}
+      >
+        {children}
+      </ItemCardContainer>
+    );
+  }
+}

@@ -2,20 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import ItemCard from '../ItemCard';
 
-const AccountCardContainer = styled(ItemCard).attrs(({ primaryColor }) => ({
-  background: `linear-gradient(360deg, ${primaryColor} 0%, #FFFFFF 100%)`,
-}))`
-  height: 50px;
-  margin-bottom: 24px;
-`;
-
 const ItemCardInner = styled('div')`
   flex: 1;
   display: flex;
 
+  padding: 0 32px;
+
   img {
     max-height: 24px;
     width: auto;
+    margin-right: 16px;
   }
 `;
 
@@ -29,19 +25,36 @@ const ItemCardDetails = styled('div')`
 const AccountName = styled('div')`
   font-family: 'Open Sans', sans-serif;
   font-size: 18px;
-  font-weight: 600;
-  color: #f4f4f4;
+  color: #000;
 `;
 
-export default ({ logo, primaryColor, name }) => {
+const AccountInfo = styled('div')`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const AccountMask = styled('sub')`
+  color: #808080;
+  font-style: italic;
+`;
+
+export default ({ index, logo, primaryColor, account, institutionName }) => {
   return (
-    <AccountCardContainer primaryColor={primaryColor}>
+    <ItemCard borderLeft={primaryColor} index={index}>
       <ItemCardInner>
         <img src={`data:image/png;base64,${logo}`} alt="Logo" />
         <ItemCardDetails>
-          <AccountName>{name}</AccountName>
+          <AccountName>{account.name}</AccountName>
+          <AccountInfo>
+            <sub>{institutionName}</sub>
+            <AccountMask>
+              xxxxxxxx
+              {account.mask}
+            </AccountMask>
+          </AccountInfo>
         </ItemCardDetails>
       </ItemCardInner>
-    </AccountCardContainer>
+    </ItemCard>
   );
 };

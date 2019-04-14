@@ -10,7 +10,7 @@ const SignInWithGoogleButton = styled('button')`
   font-size: 27px;
 
   height: 70px;
-  width: 375px;
+  width: 360px;
 
   display: flex;
   align-items: center;
