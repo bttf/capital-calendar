@@ -5,6 +5,7 @@ import ItemCard from '../ItemCard';
 const ItemCardInner = styled('div')`
   flex: 1;
   display: flex;
+  align-items: center;
 
   padding: 0 32px;
 
