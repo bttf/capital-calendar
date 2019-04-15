@@ -1,13 +1,12 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
+import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
 import db from '../../db';
+import AccountType from '../account';
 
 const CreatePlaidItemPayloadType = new GraphQLObjectType({
   name: 'CreatePlaidItemPayload',
   fields: {
-    // TODO return whatever graphql type we decide to represent a saved/connected
-    // bank.
-    status: {
-      type: GraphQLString,
+    accounts: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(AccountType))),
     },
   },
 });
@@ -19,12 +18,8 @@ export default {
     publicToken: { type: new GraphQLNonNull(GraphQLString) },
   },
   resolve: async (_, { publicToken }, { plaidClient, viewer }) => {
-    // Get access token
-    // Upsert to: users_plaid_items
-    //  - user_id
-    //  - item_id
-    //  - access_token
-    // Get and create accounts
+    let createdAccounts;
+
     try {
       await db.sequelize.transaction(async transaction => {
         const {
@@ -46,7 +41,7 @@ export default {
 
         const { accounts } = await plaidClient.getAccounts(accessToken);
 
-        await db.PlaidAccount.bulkCreate(
+        createdAccounts = await db.PlaidAccount.bulkCreate(
           accounts.map(a => ({
             accountId: a.account_id,
             name: a.name,
@@ -57,7 +52,7 @@ export default {
             plaidItemId: itemId,
             plaidInstitutionId: institutionId,
           })),
-          { transaction },
+          { transaction, returning: true },
         );
       });
     } catch (e) {
@@ -68,8 +63,6 @@ export default {
       };
     }
 
-    return {
-      status: 'OK',
-    };
+    return { accounts: createdAccounts };
   },
 };

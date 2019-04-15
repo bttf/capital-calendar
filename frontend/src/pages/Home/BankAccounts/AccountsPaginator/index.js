@@ -111,7 +111,7 @@ export default class AccountsPaginator extends React.Component {
             <div>
               {children(accounts)}
               <Paginator>
-                <Nav color="#962626" onClick={this.prevPage(fetchMore)}>
+                <Nav color="#697796" onClick={this.prevPage(fetchMore)}>
                   Prev
                 </Nav>
                 <Nav color="#697796" onClick={this.nextPage(fetchMore)}>

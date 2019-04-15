@@ -37,9 +37,11 @@ export default () => {
           <ItemContainer>
             <Title>Bank Accounts</Title>
 
-            <AccountsPaginator>
-              {accounts => <AccountsList accounts={accounts} />}
-            </AccountsPaginator>
+            {hasAccounts && (
+              <AccountsPaginator>
+                {accounts => <AccountsList accounts={accounts} />}
+              </AccountsPaginator>
+            )}
 
             {!hasAccounts && <ConnectWithPlaidButton hasAccounts={hasAccounts} />}
           </ItemContainer>
@@ -49,7 +51,7 @@ export default () => {
   );
 };
 
-const USER_QUERY = gql`
+export const USER_QUERY = gql`
   query {
     viewer {
       user {

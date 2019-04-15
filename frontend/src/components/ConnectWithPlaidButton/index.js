@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 import styled from 'styled-components';
 import PlaidLink from 'react-plaid-link';
+import { USER_QUERY } from '../../pages/Home/BankAccounts';
 import { PLAID_PUBLIC_KEY } from '../../constants';
 
 const ConnectWithPlaidButton = styled(PlaidLink)`
@@ -39,40 +40,50 @@ const ConnectWithPlaidButton = styled(PlaidLink)`
 const CREATE_PLAID_ITEM = gql`
   mutation CreatePlaidItem($publicToken: String!) {
     createPlaidItem(publicToken: $publicToken) {
-      status
+      accounts {
+        accountId
+        name
+        mask
+        institution {
+          name
+          logo
+          primaryColor
+        }
+      }
     }
   }
 `;
 
-export default ({ hasAccounts }) => (
-  <Mutation mutation={CREATE_PLAID_ITEM}>
-    {(createPlaidItem, { called, data, loading }) => {
-      return (
-        <ConnectWithPlaidButton
-          clientName="Capital Calendar"
-          env="sandbox"
-          product={['transactions']}
-          publicKey={PLAID_PUBLIC_KEY}
-          onExit={() => {}}
-          onSuccess={(publicToken, metadata) => {
-            console.log('onSuccess: metadata', metadata);
-            createPlaidItem({
-              variables: {
-                publicToken,
-              },
-            });
-          }}
-        >
-          {hasAccounts ? (
-            '+ Add another'
-          ) : (
-            <span>
-              Connect with
-              <img alt="Plaid logo" src="/plaid-logo.svg" />
-            </span>
-          )}
-        </ConnectWithPlaidButton>
-      );
-    }}
-  </Mutation>
-);
+export default () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  return (
+    <Mutation mutation={CREATE_PLAID_ITEM} refetchQueries={() => [{ query: USER_QUERY }]}>
+      {(createPlaidItem, { called, data, loading }) => {
+        return isLoading ? (
+          <span>Loading...</span>
+        ) : (
+          <ConnectWithPlaidButton
+            clientName="Capital Calendar"
+            env="sandbox"
+            product={['transactions']}
+            publicKey={PLAID_PUBLIC_KEY}
+            onExit={() => {}}
+            onSuccess={(publicToken, metadata) => {
+              console.log('onSuccess: metadata', metadata);
+              setIsLoading(true);
+              createPlaidItem({
+                variables: {
+                  publicToken,
+                },
+              });
+            }}
+          >
+            Connect with
+            <img alt="Plaid logo" src="/plaid-logo.svg" />
+          </ConnectWithPlaidButton>
+        );
+      }}
+    </Mutation>
+  );
+};
