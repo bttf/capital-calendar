@@ -1,14 +1,20 @@
-import React from 'react';
-
-import CreateCalendarCard from './CreateCalendarCard';
-import CalendarBlockingOverlay from './CalendarBlockingOverlay';
+import React, { useState } from 'react';
 import { ItemContainer, Title } from '../BankAccounts';
+import AddYourFirstCalendarButton from './AddYourFirstCalendarButton';
+import CreateCalendarForm from './CreateCalendarForm';
+import CalendarBlockingOverlay from './CalendarBlockingOverlay';
 
 export default () => {
+  const [showCreateForm, setShowCreateForm] = useState(false);
+
   return (
     <ItemContainer>
       <Title>Google Calendar</Title>
-      <CreateCalendarCard />
+
+      {!showCreateForm && <AddYourFirstCalendarButton onClick={() => setShowCreateForm(true)} />}
+
+      {showCreateForm && <CreateCalendarForm />}
+
       <CalendarBlockingOverlay />
     </ItemContainer>
   );

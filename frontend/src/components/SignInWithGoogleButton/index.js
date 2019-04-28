@@ -5,7 +5,7 @@ import { Query } from 'react-apollo';
 
 import publicClient from '../../apollo/publicClient';
 
-const SignInWithGoogleButton = styled('button')`
+export const SignInWithGoogleButton = styled('button')`
   font-family: 'Arvo', serif;
   font-size: 27px;
 
