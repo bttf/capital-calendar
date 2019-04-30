@@ -1,7 +1,31 @@
 import React from 'react';
+import { Mutation } from 'react-apollo';
+import gql from 'graphql-tag';
+import { Formik, Field } from 'formik';
 import styled from 'styled-components';
 import Button from '../../../../components/Button';
 import CadenceSelector from './CadenceSelector';
+
+const CREATE_CALENDAR = gql`
+  mutation CreateCalendar(
+    $name: String!
+    $cadence: TransactionMonitorCadenceEnum!
+    $expenseAccountIds: [String!]!
+    $incomeAccountIds: [String!]!
+  ) {
+    createTransactionMonitor(
+      name: $name
+      cadence: $cadence
+      expenseAccountIds: $expenseAccountIds
+      incomeAccountIds: $incomeAccountIds
+    ) {
+      transactionMonitor {
+        name
+        cadence
+      }
+    }
+  }
+`;
 
 const CreateCalendarFormContainer = styled('div')`
   width: 360px;
@@ -52,7 +76,7 @@ const CancelButton = styled(Button)`
   font-size: 14px;
 `;
 
-const SaveButton = styled(Button)`
+const SaveButton = styled(Button, { type: 'submit' })`
   flex: 1;
   background-color: #697796;
   color: white;
@@ -67,31 +91,53 @@ export default class CreateCalendarForm extends React.Component {
     const { cancelForm } = this.props;
 
     return (
-      <React.Fragment>
-        <CreateCalendarFormContainer>
-          <CalendarNameInput placeholder="Calendar name" />
+      <Mutation mutation={CREATE_CALENDAR}>
+        {(createCalendar, { called, data, loading }) => {
+          return (
+            <Formik
+              initialValues={{
+                cadence: 'daily',
+              }}
+              onSubmit={values => {
+                createCalendar({ variables: values });
+              }}
+            >
+              {({ values, errors, handleChange, handleSubmit }) => (
+                <form onSubmit={handleSubmit}>
+                  <CreateCalendarFormContainer>
+                    <CalendarNameInput
+                      placeholder="Calendar name"
+                      name="name"
+                      onChange={handleChange}
+                      value={values.name}
+                    />
 
-          <FormLabel>Cadence</FormLabel>
+                    <FormLabel>Cadence</FormLabel>
 
-          <CadenceSelector />
+                    <Field name="cadence" component={CadenceSelector} />
 
-          <FormLabel>
-            Measure <Color color="#C56666">expenses</Color> from 0 accounts
-          </FormLabel>
+                    <FormLabel>
+                      Measure <Color color="#C56666">expenses</Color> from 0 accounts
+                    </FormLabel>
 
-          <AccountSelectorButton expenses>Select accounts</AccountSelectorButton>
+                    <AccountSelectorButton expenses>Select accounts</AccountSelectorButton>
 
-          <FormLabel>
-            Measure <Color color="#6A9669">income</Color> from 0 accounts
-          </FormLabel>
+                    <FormLabel>
+                      Measure <Color color="#6A9669">income</Color> from 0 accounts
+                    </FormLabel>
 
-          <AccountSelectorButton>Select accounts</AccountSelectorButton>
-        </CreateCalendarFormContainer>
-        <ButtonsContainer>
-          <CancelButton onClick={cancelForm}>Cancel</CancelButton>
-          <SaveButton>Save calendar</SaveButton>
-        </ButtonsContainer>
-      </React.Fragment>
+                    <AccountSelectorButton>Select accounts</AccountSelectorButton>
+                  </CreateCalendarFormContainer>
+                  <ButtonsContainer>
+                    <CancelButton onClick={cancelForm}>Cancel</CancelButton>
+                    <SaveButton>Save calendar</SaveButton>
+                  </ButtonsContainer>
+                </form>
+              )}
+            </Formik>
+          );
+        }}
+      </Mutation>
     );
   }
 }

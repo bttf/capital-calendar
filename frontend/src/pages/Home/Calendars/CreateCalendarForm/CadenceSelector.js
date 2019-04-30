@@ -24,26 +24,23 @@ const CadenceOptionText = styled('div')`
   }
 `;
 
-export default () => {
-  const [selectedCadence, setCadence] = useState();
+export default props => {
+  const { field } = props;
+  const { value, onChange } = field;
+
+  const onCadenceChange = onChange('cadence');
 
   return (
     <CadenceSelectorContainer>
-      <CadenceOptionText
-        isSelected={selectedCadence === 'daily'}
-        onClick={() => setCadence('daily')}
-      >
+      <CadenceOptionText isSelected={value === 'daily'} onClick={() => onCadenceChange('daily')}>
         Daily
       </CadenceOptionText>
-      <CadenceOptionText
-        isSelected={selectedCadence === 'weekly'}
-        onClick={() => setCadence('weekly')}
-      >
+      <CadenceOptionText isSelected={value === 'weekly'} onClick={() => onCadenceChange('weekly')}>
         Weekly
       </CadenceOptionText>
       <CadenceOptionText
-        isSelected={selectedCadence === 'monthly'}
-        onClick={() => setCadence('monthly')}
+        isSelected={value === 'monthly'}
+        onClick={() => onCadenceChange('monthly')}
       >
         Monthly
       </CadenceOptionText>
