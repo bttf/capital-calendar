@@ -42,7 +42,13 @@ export default (sequelize, DataTypes) => {
   );
 
   PlaidAccount.associate = models => {
-    const { PlaidInstitution, PlaidItem, User } = models;
+    const {
+      PlaidAccountsTransactionMonitors,
+      PlaidInstitution,
+      PlaidItem,
+      TransactionMonitor,
+      User,
+    } = models;
 
     PlaidAccount.PlaidInstitution = PlaidAccount.belongsTo(PlaidInstitution, {
       foreignKey: 'plaid_institution_id',
@@ -57,6 +63,12 @@ export default (sequelize, DataTypes) => {
     PlaidAccount.User = PlaidAccount.belongsTo(User, {
       foreignKey: 'user_id',
       as: 'user',
+    });
+
+    PlaidAccount.TransactionMonitors = PlaidAccount.belongsToMany(TransactionMonitor, {
+      through: PlaidAccountsTransactionMonitors,
+      foreignKey: 'transaction_monitor_id',
+      as: 'TransactionMonitors',
     });
   };
 
