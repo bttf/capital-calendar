@@ -9,11 +9,11 @@ export default () => {
 
   return (
     <ItemContainer>
-      <Title>Google Calendar</Title>
+      <Title>Calendars</Title>
 
       {!showCreateForm && <AddYourFirstCalendarButton onClick={() => setShowCreateForm(true)} />}
 
-      {showCreateForm && <CreateCalendarForm />}
+      {showCreateForm && <CreateCalendarForm cancelForm={() => setShowCreateForm(false)} />}
 
       <CalendarBlockingOverlay />
     </ItemContainer>

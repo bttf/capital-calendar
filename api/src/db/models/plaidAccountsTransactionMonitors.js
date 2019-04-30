@@ -5,16 +5,13 @@ export default (sequelize, DataTypes) => {
       accountId: {
         type: DataTypes.STRING,
         field: 'account_id',
-        allowNull: false,
       },
       transactionMonitorId: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         field: 'transaction_monitor_id',
-        allowNull: false,
       },
       type: {
         type: DataTypes.ENUM(['income', 'expenses']),
-        allowNull: false,
       },
     },
     {

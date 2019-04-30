@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const CadenceSelectorContainer = styled('div')`
@@ -18,14 +18,35 @@ const CadenceOptionText = styled('div')`
   cursor: pointer;
   font-weight: 600;
   color: ${p => (p.isSelected ? '#808080' : '#C4C4C4')};
+
+  &:hover {
+    color: #697796;
+  }
 `;
 
 export default () => {
+  const [selectedCadence, setCadence] = useState();
+
   return (
     <CadenceSelectorContainer>
-      <CadenceOptionText>Daily</CadenceOptionText>
-      <CadenceOptionText>Weekly</CadenceOptionText>
-      <CadenceOptionText>Monthly</CadenceOptionText>
+      <CadenceOptionText
+        isSelected={selectedCadence === 'daily'}
+        onClick={() => setCadence('daily')}
+      >
+        Daily
+      </CadenceOptionText>
+      <CadenceOptionText
+        isSelected={selectedCadence === 'weekly'}
+        onClick={() => setCadence('weekly')}
+      >
+        Weekly
+      </CadenceOptionText>
+      <CadenceOptionText
+        isSelected={selectedCadence === 'monthly'}
+        onClick={() => setCadence('monthly')}
+      >
+        Monthly
+      </CadenceOptionText>
     </CadenceSelectorContainer>
   );
 };

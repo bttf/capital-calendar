@@ -36,18 +36,36 @@ const AccountSelectorButton = styled(Button)`
   padding: 8px;
 `;
 
+const ButtonsContainer = styled('div')`
+  display: flex;
+  justify-content: space-between;
+
+  padding-top: 16px;
+
+  width: 392px;
+`;
+
+const CancelButton = styled(Button)`
+  flex: 1;
+  margin-right: 8px;
+  font-family: 'Arvo', serif;
+  font-size: 14px;
+`;
+
 const SaveButton = styled(Button)`
+  flex: 1;
   background-color: #697796;
   color: white;
   font-family: 'Arvo', serif;
-  margin-top: 16px;
   padding: 8px;
-  width: 392px;
   font-size: 14px;
+  margin-left: 8px;
 `;
 
 export default class CreateCalendarForm extends React.Component {
   render() {
+    const { cancelForm } = this.props;
+
     return (
       <React.Fragment>
         <CreateCalendarFormContainer>
@@ -69,7 +87,10 @@ export default class CreateCalendarForm extends React.Component {
 
           <AccountSelectorButton>Select accounts</AccountSelectorButton>
         </CreateCalendarFormContainer>
-        <SaveButton>Save calendar</SaveButton>
+        <ButtonsContainer>
+          <CancelButton onClick={cancelForm}>Cancel</CancelButton>
+          <SaveButton>Save calendar</SaveButton>
+        </ButtonsContainer>
       </React.Fragment>
     );
   }

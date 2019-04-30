@@ -1,6 +1,6 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLEnumType } from 'graphql';
 
-const TransactionMonitorCadenceEnumType = new GraphQLEnumType({
+export const TransactionMonitorCadenceEnumType = new GraphQLEnumType({
   name: 'TransactionMonitorCadenceEnum',
   values: {
     DAILY: { value: 'daily' },
