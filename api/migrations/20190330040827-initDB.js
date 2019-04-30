@@ -51,7 +51,7 @@ exports.up = function(db) {
 
     CREATE UNIQUE INDEX app_google_auths_user_id_fkey ON app.google_auths(user_id);
 
-    CREATE TRIGGER update_topic_modtime
+    CREATE TRIGGER update_google_auths_modtime
     BEFORE UPDATE ON app.google_auths FOR EACH ROW EXECUTE PROCEDURE app.update_modified_column();
 
     CREATE TABLE app.plaid_institutions (
@@ -74,7 +74,7 @@ exports.up = function(db) {
 
     CREATE INDEX app_plaid_items_user_id_fkey ON app.plaid_items(user_id);
 
-    CREATE TRIGGER update_topic_modtime
+    CREATE TRIGGER update_plaid_items_modtime
     BEFORE UPDATE ON app.plaid_items FOR EACH ROW EXECUTE PROCEDURE app.update_modified_column();
 
     CREATE TABLE app.plaid_accounts (
@@ -93,8 +93,37 @@ exports.up = function(db) {
     CREATE INDEX app_plaid_accounts_item_id_fkey ON app.plaid_accounts(plaid_item_id);
     CREATE INDEX app_plaid_accounts_user_id_fkey ON app.plaid_accounts(user_id);
 
-    CREATE TRIGGER update_topic_modtime
+    CREATE TRIGGER update_plaid_accounts_modtime
     BEFORE UPDATE ON app.plaid_accounts FOR EACH ROW EXECUTE PROCEDURE app.update_modified_column();
+
+    CREATE TYPE transaction_monitors_cadence AS ENUM ('daily', 'weekly', 'monthly');
+
+    CREATE TABLE app.transaction_monitors (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      cadence transaction_monitors_cadence NOT NULL,
+      user_id INTEGER NOT NULL REFERENCES app.users ON DELETE CASCADE,
+      created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc'),
+      updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')
+    );
+
+    CREATE INDEX app_transaction_monitors_user_id_fkey ON app.transaction_monitors(user_id);
+    CREATE INDEX app_transaction_monitors_cadence_fkey ON app.transaction_monitors(cadence);
+
+    CREATE TRIGGER update_transaction_monitor_modtime
+    BEFORE UPDATE ON app.transaction_monitors FOR EACH ROW EXECUTE PROCEDURE app.update_modified_column();
+
+    CREATE TYPE plaid_accounts_transaction_monitors_type AS ENUM ('income', 'expenses');
+
+    CREATE TABLE app.plaid_accounts_transaction_monitors (
+      id SERIAL PRIMARY KEY,
+      account_id TEXT NOT NULL REFERENCES app.plaid_accounts ON DELETE CASCADE,
+      transaction_monitor_id INTEGER NOT NULL REFERENCES app.transaction_monitors ON DELETE CASCADE,
+      type plaid_accounts_transaction_monitors_type NOT NULL,
+      created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')
+    );
+
+    CREATE INDEX app_plaid_accounts_transaction_monitors_fkey ON app.plaid_accounts_transaction_monitors(transaction_monitor_id);
   `;
   return db.runSql(sql);
 };
