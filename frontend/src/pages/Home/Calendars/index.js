@@ -1,21 +1,41 @@
-import React, { useState } from 'react';
+import React from 'react';
+import HomeContext from '../HomeContext';
 import { ItemContainer, Title } from '../BankAccounts';
 import AddYourFirstCalendarButton from './AddYourFirstCalendarButton';
 import CreateCalendarForm from './CreateCalendarForm';
 import CalendarBlockingOverlay from './CalendarBlockingOverlay';
 
-export default () => {
-  const [showCreateForm, setShowCreateForm] = useState(false);
-
+export default props => {
   return (
-    <ItemContainer>
-      <Title>Calendars</Title>
+    <HomeContext.Consumer>
+      {({
+        isCreatingCalendar,
+        setIsCreatingCalendar,
+        setSelectingAccountType,
+        setIncomeAccountIds,
+        setExpenseAccountIds,
+      }) => (
+        <ItemContainer>
+          <Title>Calendars</Title>
 
-      {!showCreateForm && <AddYourFirstCalendarButton onClick={() => setShowCreateForm(true)} />}
+          {!isCreatingCalendar && (
+            <AddYourFirstCalendarButton onClick={() => setIsCreatingCalendar(true)} />
+          )}
 
-      {showCreateForm && <CreateCalendarForm cancelForm={() => setShowCreateForm(false)} />}
+          {isCreatingCalendar && (
+            <CreateCalendarForm
+              cancelForm={() => {
+                setSelectingAccountType(null);
+                setIncomeAccountIds([]);
+                setExpenseAccountIds([]);
+                setIsCreatingCalendar(false);
+              }}
+            />
+          )}
 
-      <CalendarBlockingOverlay />
-    </ItemContainer>
+          <CalendarBlockingOverlay />
+        </ItemContainer>
+      )}
+    </HomeContext.Consumer>
   );
 };

@@ -9,18 +9,18 @@ export const ItemCardContainer = styled('div')`
 
   background: ${p => (p.background ? p.background : 'white')};
 
-  ${p => {
-    if (p.isDashedBorder) return '';
+  ${p => !p.isDashedBorder && 'box-shadow:  0px 1px 4px 0 rgba(0, 0, 0, 0.25);'} ${p =>
+    p.isClickable &&
+    `
+    cursor: pointer;
 
-    return `
-      box-shadow:  0px 1px 4px 0 rgba(0, 0, 0, 0.25);
+    &:hover {
+      box-shadow:  0px 2px 10px 0 rgba(0, 0, 0, 0.25);
+      transform: scale(1.05);
+    }
+  `}
 
-      &:hover {
-        box-shadow:  0px 2px 10px 0 rgba(0, 0, 0, 0.25);
-        transform: scale(1.05);
-      }
-    `;
-  }} border-radius: 8px;
+  border-radius: 8px;
 
   ${p => (p.isDashedBorder ? 'border: 3px dashed #697796;' : '')} display: flex;
   align-items: center;
@@ -34,7 +34,7 @@ export const ItemCardContainer = styled('div')`
     box-shadow:  0px 2px 10px 0 rgba(0, 0, 0, 0.25);
   `
       : `
-    opacity: 1;
+    ${p.isFaded ? 'opacity: 0.3' : 'opacity: 1;'}
     transform: scale(1);
   `} ${p =>
     p.borderLeft
@@ -58,11 +58,13 @@ export default class ItemCard extends React.Component {
   }
 
   render() {
-    const { background, borderLeft, isDashedBorder, children } = this.props;
+    const { background, borderLeft, isDashedBorder, isClickable, isFaded, children } = this.props;
     const { isInTheEther } = this.state;
 
     return (
       <ItemCardContainer
+        isFaded={isFaded}
+        isClickable={isClickable}
         isInTheEther={isInTheEther}
         borderLeft={borderLeft}
         background={background}

@@ -25,7 +25,7 @@ export const Title = styled('div')`
   margin-bottom: 32px;
 `;
 
-export default () => {
+export default props => {
   return (
     <Query query={USER_QUERY}>
       {({ loading, error, data }) => {

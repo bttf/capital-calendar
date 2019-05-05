@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { Formik, Field } from 'formik';
 import styled from 'styled-components';
 import Button from '../../../../components/Button';
+import HomeContext from '../../HomeContext';
 import CadenceSelector from './CadenceSelector';
 
 const CREATE_CALENDAR = gql`
@@ -86,58 +87,86 @@ const SaveButton = styled(Button, { type: 'submit' })`
   margin-left: 8px;
 `;
 
-export default class CreateCalendarForm extends React.Component {
-  render() {
-    const { cancelForm } = this.props;
+export default props => {
+  const { cancelForm } = props;
 
-    return (
-      <Mutation mutation={CREATE_CALENDAR}>
-        {(createCalendar, { called, data, loading }) => {
-          return (
-            <Formik
-              initialValues={{
-                cadence: 'daily',
-              }}
-              onSubmit={values => {
-                createCalendar({ variables: values });
-              }}
-            >
-              {({ values, errors, handleChange, handleSubmit }) => (
-                <form onSubmit={handleSubmit}>
-                  <CreateCalendarFormContainer>
-                    <CalendarNameInput
-                      placeholder="Calendar name"
-                      name="name"
-                      onChange={handleChange}
-                      value={values.name}
-                    />
+  return (
+    <Mutation mutation={CREATE_CALENDAR}>
+      {(createCalendar, { called, data, loading }) => {
+        return (
+          <HomeContext.Consumer>
+            {({
+              selectingAccountType,
+              setSelectingAccountType,
+              incomeAccountIdsSelected,
+              expenseAccountIdsSelected,
+            }) => (
+              <Formik
+                initialValues={{
+                  cadence: 'daily',
+                }}
+                onSubmit={values => {
+                  createCalendar({ variables: values });
+                }}
+              >
+                {({ values, errors, handleChange, handleSubmit }) => (
+                  <form onSubmit={handleSubmit}>
+                    <CreateCalendarFormContainer>
+                      <CalendarNameInput
+                        placeholder="Calendar name"
+                        name="name"
+                        onChange={handleChange}
+                        value={values.name}
+                      />
 
-                    <FormLabel>Cadence</FormLabel>
+                      <FormLabel>Cadence</FormLabel>
 
-                    <Field name="cadence" component={CadenceSelector} />
+                      <Field name="cadence" component={CadenceSelector} />
 
-                    <FormLabel>
-                      Measure <Color color="#C56666">expenses</Color> from 0 accounts
-                    </FormLabel>
+                      <FormLabel>
+                        Measure <Color color="#C56666">expenses</Color> from{' '}
+                        {expenseAccountIdsSelected.length} accounts
+                      </FormLabel>
 
-                    <AccountSelectorButton expenses>Select accounts</AccountSelectorButton>
+                      <AccountSelectorButton
+                        expenses
+                        disabled={selectingAccountType === 'income'}
+                        onClick={() =>
+                          setSelectingAccountType(
+                            selectingAccountType === 'expenses' ? null : 'expenses',
+                          )
+                        }
+                      >
+                        {selectingAccountType === 'expenses' ? 'Done' : 'Select accounts'}
+                      </AccountSelectorButton>
 
-                    <FormLabel>
-                      Measure <Color color="#6A9669">income</Color> from 0 accounts
-                    </FormLabel>
+                      <FormLabel>
+                        Measure <Color color="#6A9669">income</Color> from{' '}
+                        {incomeAccountIdsSelected.length} accounts
+                      </FormLabel>
 
-                    <AccountSelectorButton>Select accounts</AccountSelectorButton>
-                  </CreateCalendarFormContainer>
-                  <ButtonsContainer>
-                    <CancelButton onClick={cancelForm}>Cancel</CancelButton>
-                    <SaveButton>Save calendar</SaveButton>
-                  </ButtonsContainer>
-                </form>
-              )}
-            </Formik>
-          );
-        }}
-      </Mutation>
-    );
-  }
-}
+                      <AccountSelectorButton
+                        disabled={selectingAccountType === 'expenses'}
+                        onClick={() =>
+                          setSelectingAccountType(
+                            selectingAccountType === 'income' ? null : 'income',
+                          )
+                        }
+                      >
+                        {selectingAccountType === 'income' ? 'Done' : 'Select accounts'}
+                      </AccountSelectorButton>
+                    </CreateCalendarFormContainer>
+                    <ButtonsContainer>
+                      <CancelButton onClick={cancelForm}>Cancel</CancelButton>
+                      <SaveButton>Save calendar</SaveButton>
+                    </ButtonsContainer>
+                  </form>
+                )}
+              </Formik>
+            )}
+          </HomeContext.Consumer>
+        );
+      }}
+    </Mutation>
+  );
+};
