@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 export const ItemCardContainer = styled('div')`
+  position: relative;
+
   height: 70px;
   width: 360px;
 
@@ -17,6 +19,7 @@ export const ItemCardContainer = styled('div')`
     &:hover {
       box-shadow:  0px 2px 10px 0 rgba(0, 0, 0, 0.25);
       transform: scale(1.05);
+      opacity: 1;
     }
   `}
 
@@ -46,6 +49,27 @@ export const ItemCardContainer = styled('div')`
   transition: all 500ms;
 `;
 
+const HighlightContainer = styled('div')`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+
+  display: flex;
+  flex-direction: column;
+
+  font-size: 8px;
+  font-weight: 600;
+  font-family: 'Open Sans', sans-serif;
+`;
+
+const HighlightRed = styled('div')`
+  color: red;
+`;
+
+const HighlightGreen = styled('div')`
+  color: green;
+`;
+
 export default class ItemCard extends React.Component {
   state = { isInTheEther: true };
 
@@ -58,11 +82,22 @@ export default class ItemCard extends React.Component {
   }
 
   render() {
-    const { background, borderLeft, isDashedBorder, isClickable, isFaded, children } = this.props;
+    const {
+      background,
+      borderLeft,
+      isDashedBorder,
+      isClickable,
+      isFaded,
+      children,
+      onClick,
+      highlightRed,
+      highlightGreen,
+    } = this.props;
     const { isInTheEther } = this.state;
 
     return (
       <ItemCardContainer
+        onClick={onClick}
         isFaded={isFaded}
         isClickable={isClickable}
         isInTheEther={isInTheEther}
@@ -71,6 +106,12 @@ export default class ItemCard extends React.Component {
         isDashedBorder={isDashedBorder}
       >
         {children}
+        {(highlightRed || highlightGreen) && (
+          <HighlightContainer>
+            {highlightRed && <HighlightRed>{highlightRed}</HighlightRed>}
+            {highlightGreen && <HighlightGreen>{highlightGreen}</HighlightGreen>}
+          </HighlightContainer>
+        )}
       </ItemCardContainer>
     );
   }

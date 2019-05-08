@@ -40,14 +40,32 @@ const AccountMask = styled('sub')`
   font-style: italic;
 `;
 
-export default ({ index, isFaded, logo, primaryColor, account, institutionName, onClick }) => {
+export default ({
+  index,
+  isFaded,
+  logo,
+  primaryColor,
+  account,
+  institutionName,
+  onClick,
+  highlightRed,
+  highlightGreen,
+}) => {
   const isClickable = typeof onClick === 'function';
 
   const noop = () => {};
 
   return (
-    <ItemCard isFaded={isFaded} borderLeft={primaryColor} index={index} isClickable={isClickable}>
-      <ItemCardInner onClick={isClickable ? onClick : noop}>
+    <ItemCard
+      isFaded={isFaded}
+      borderLeft={primaryColor}
+      index={index}
+      isClickable={isClickable}
+      onClick={isClickable ? onClick : noop}
+      highlightRed={highlightRed}
+      highlightGreen={highlightGreen}
+    >
+      <ItemCardInner>
         <img src={`data:image/png;base64,${logo}`} alt="Logo" />
         <ItemCardDetails>
           <AccountName>{account.name}</AccountName>

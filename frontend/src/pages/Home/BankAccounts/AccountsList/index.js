@@ -28,8 +28,6 @@ export default props => {
   const noop = () => {};
 
   const onClick = ({ accountId, accountIdsSelected, setSelectedAccountIds }) => () => {
-    console.log('DEBUG onClick', accountId);
-
     const newSelectedAccountIds = [...accountIdsSelected];
 
     if (accountIdsSelected.includes(accountId)) {
@@ -37,10 +35,6 @@ export default props => {
     } else {
       newSelectedAccountIds.push(accountId);
     }
-
-    console.log('DEBUG onClick', {
-      newSelectedAccountIds,
-    });
 
     setSelectedAccountIds(newSelectedAccountIds);
   };
@@ -63,6 +57,8 @@ export default props => {
               logo={a.institution.logo}
               primaryColor={a.institution.primaryColor}
               institutionName={a.institution.name}
+              highlightRed={expenseAccountIdsSelected.includes(a.accountId) && 'Expenses'}
+              highlightGreen={incomeAccountIdsSelected.includes(a.accountId) && 'Income'}
               isFaded={
                 isCreatingCalendar &&
                 ![...incomeAccountIdsSelected, ...expenseAccountIdsSelected].includes(a.accountId)
