@@ -32,15 +32,15 @@ export default props => {
 
   return (
     <CadenceSelectorContainer>
-      <CadenceOptionText isSelected={value === 'daily'} onClick={() => onCadenceChange('daily')}>
+      <CadenceOptionText isSelected={value === 'DAILY'} onClick={() => onCadenceChange('DAILY')}>
         Daily
       </CadenceOptionText>
-      <CadenceOptionText isSelected={value === 'weekly'} onClick={() => onCadenceChange('weekly')}>
+      <CadenceOptionText isSelected={value === 'WEEKLY'} onClick={() => onCadenceChange('WEEKLY')}>
         Weekly
       </CadenceOptionText>
       <CadenceOptionText
-        isSelected={value === 'monthly'}
-        onClick={() => onCadenceChange('monthly')}
+        isSelected={value === 'MONTHLY'}
+        onClick={() => onCadenceChange('MONTHLY')}
       >
         Monthly
       </CadenceOptionText>

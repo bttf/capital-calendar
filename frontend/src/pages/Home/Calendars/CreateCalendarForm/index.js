@@ -103,10 +103,16 @@ export default props => {
             }) => (
               <Formik
                 initialValues={{
-                  cadence: 'daily',
+                  cadence: 'DAILY',
                 }}
                 onSubmit={values => {
-                  createCalendar({ variables: values });
+                  createCalendar({
+                    variables: {
+                      ...values,
+                      expenseAccountIds: expenseAccountIdsSelected,
+                      incomeAccountIds: incomeAccountIdsSelected,
+                    },
+                  });
                 }}
               >
                 {({ values, errors, handleChange, handleSubmit }) => (
@@ -131,11 +137,12 @@ export default props => {
                       <AccountSelectorButton
                         expenses
                         disabled={selectingAccountType === 'income'}
-                        onClick={() =>
+                        onClick={e => {
+                          e.preventDefault();
                           setSelectingAccountType(
                             selectingAccountType === 'expenses' ? null : 'expenses',
-                          )
-                        }
+                          );
+                        }}
                       >
                         {selectingAccountType === 'expenses' ? 'Done' : 'Select accounts'}
                       </AccountSelectorButton>
@@ -147,11 +154,12 @@ export default props => {
 
                       <AccountSelectorButton
                         disabled={selectingAccountType === 'expenses'}
-                        onClick={() =>
+                        onClick={e => {
+                          e.preventDefault();
                           setSelectingAccountType(
                             selectingAccountType === 'income' ? null : 'income',
-                          )
-                        }
+                          );
+                        }}
                       >
                         {selectingAccountType === 'income' ? 'Done' : 'Select accounts'}
                       </AccountSelectorButton>
