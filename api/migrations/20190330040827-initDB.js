@@ -96,34 +96,35 @@ exports.up = function(db) {
     CREATE TRIGGER update_plaid_accounts_modtime
     BEFORE UPDATE ON app.plaid_accounts FOR EACH ROW EXECUTE PROCEDURE app.update_modified_column();
 
-    CREATE TYPE transaction_monitors_cadence AS ENUM ('daily', 'weekly', 'monthly');
+    CREATE TYPE calendars_cadence AS ENUM ('daily', 'weekly', 'monthly');
 
-    CREATE TABLE app.transaction_monitors (
+    CREATE TABLE app.calendars (
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
-      cadence transaction_monitors_cadence NOT NULL,
+      cadence calendars_cadence NOT NULL,
       user_id INTEGER NOT NULL REFERENCES app.users ON DELETE CASCADE,
+      google_calendar_id TEXT NOT NULL,
       created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc'),
       updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')
     );
 
-    CREATE INDEX app_transaction_monitors_user_id_fkey ON app.transaction_monitors(user_id);
-    CREATE INDEX app_transaction_monitors_cadence_fkey ON app.transaction_monitors(cadence);
+    CREATE INDEX app_calendars_user_id_fkey ON app.calendars(user_id);
+    CREATE INDEX app_calendars_cadence_fkey ON app.calendars(cadence);
 
-    CREATE TRIGGER update_transaction_monitor_modtime
-    BEFORE UPDATE ON app.transaction_monitors FOR EACH ROW EXECUTE PROCEDURE app.update_modified_column();
+    CREATE TRIGGER update_calendar_modtime
+    BEFORE UPDATE ON app.calendars FOR EACH ROW EXECUTE PROCEDURE app.update_modified_column();
 
-    CREATE TYPE plaid_accounts_transaction_monitors_type AS ENUM ('income', 'expenses');
+    CREATE TYPE plaid_accounts_calendars_type AS ENUM ('income', 'expenses');
 
-    CREATE TABLE app.plaid_accounts_transaction_monitors (
+    CREATE TABLE app.plaid_accounts_calendars (
       id SERIAL PRIMARY KEY,
       account_id TEXT NOT NULL REFERENCES app.plaid_accounts ON DELETE CASCADE,
-      transaction_monitor_id INTEGER NOT NULL REFERENCES app.transaction_monitors ON DELETE CASCADE,
-      type plaid_accounts_transaction_monitors_type NOT NULL,
+      calendar_id INTEGER NOT NULL REFERENCES app.calendars ON DELETE CASCADE,
+      type plaid_accounts_calendars_type NOT NULL,
       created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')
     );
 
-    CREATE INDEX app_plaid_accounts_transaction_monitors_fkey ON app.plaid_accounts_transaction_monitors(transaction_monitor_id);
+    CREATE INDEX app_plaid_accounts_calendars_fkey ON app.plaid_accounts_calendars(calendar_id);
   `;
   return db.runSql(sql);
 };

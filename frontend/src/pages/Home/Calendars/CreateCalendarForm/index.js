@@ -10,17 +10,17 @@ import CadenceSelector from './CadenceSelector';
 const CREATE_CALENDAR = gql`
   mutation CreateCalendar(
     $name: String!
-    $cadence: TransactionMonitorCadenceEnum!
+    $cadence: CalendarCadenceEnum!
     $expenseAccountIds: [String!]!
     $incomeAccountIds: [String!]!
   ) {
-    createTransactionMonitor(
+    createCalendar(
       name: $name
       cadence: $cadence
       expenseAccountIds: $expenseAccountIds
       incomeAccountIds: $incomeAccountIds
     ) {
-      transactionMonitor {
+      calendar {
         name
         cadence
       }

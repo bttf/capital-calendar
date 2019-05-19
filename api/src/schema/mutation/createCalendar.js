@@ -1,12 +1,13 @@
 import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
 import db from '../../db';
-import TransactionMonitorType, { TransactionMonitorCadenceEnumType } from '../transactionMonitor';
+import CalendarType, { CalendarCadenceEnumType } from '../calendar';
+import { createGoogleCalendar } from '../../lib/google';
 
 const CreateCalendarPayloadType = new GraphQLObjectType({
   name: 'CreateCalendarPayload',
   fields: {
-    transactionMonitor: {
-      type: new GraphQLNonNull(TransactionMonitorType),
+    calendar: {
+      type: new GraphQLNonNull(CalendarType),
     },
   },
 });
@@ -16,7 +17,7 @@ export default {
   type: CreateCalendarPayloadType,
   args: {
     name: { type: new GraphQLNonNull(GraphQLString) },
-    cadence: { type: new GraphQLNonNull(TransactionMonitorCadenceEnumType) },
+    cadence: { type: new GraphQLNonNull(CalendarCadenceEnumType) },
     expenseAccountIds: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString))),
     },
@@ -24,8 +25,8 @@ export default {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString))),
     },
   },
-  resolve: async (_, args, { viewer }) => {
-    let transactionMonitor;
+  resolve: async (_, args, { googleAuth, viewer }) => {
+    let calendar;
     const { name, cadence, expenseAccountIds = [], incomeAccountIds = [] } = args;
 
     if (!expenseAccountIds.length && !incomeAccountIds.length) {
@@ -33,32 +34,51 @@ export default {
     }
 
     try {
+      const googleCalendar = await createGoogleCalendar({
+        googleAuth,
+        name,
+      });
+
+      // Example calendar payload
+      // {
+      //   "kind": "calendar#calendar",
+      //     "etag": "\"MdzT9DDZ3pYVHggf2BlysiBDqcw/leOHudOXk5EK79BVPjlwfkFrv6Y\"",
+      //     "id": "l93qetaoek3chpnl899buki6ls@group.calendar.google.com",
+      //     "summary": "Capital calendar #2",
+      //     "timeZone": "UTC",
+      //     "conferenceProperties": {
+      //       "allowedConferenceSolutionTypes": [
+      //         "eventHangout"
+      //       ]
+      //     }
+      // }
+
       await db.sequelize.transaction(async transaction => {
-        transactionMonitor = await db.TransactionMonitor.create(
+        calendar = await db.Calendar.create(
           {
-            // TODO Don't think name needs to be on transaction monitor anymore?
             name,
             cadence,
             userId: viewer.user.id,
+            googleCalendarId: googleCalendar.id,
           },
           { transaction, returning: true },
         );
 
         // I don't know why these need to be snake-case to work. But
         // they do.
-        await db.PlaidAccountsTransactionMonitors.bulkCreate(
+        await db.PlaidAccountsCalendars.bulkCreate(
           expenseAccountIds.map(accountId => ({
             account_id: accountId,
-            transaction_monitor_id: transactionMonitor.id,
+            calendar_id: calendar.id,
             type: 'expenses',
           })),
           { transaction },
         );
 
-        await db.PlaidAccountsTransactionMonitors.bulkCreate(
+        await db.PlaidAccountsCalendars.bulkCreate(
           incomeAccountIds.map(accountId => ({
             account_id: accountId,
-            transaction_monitor_id: transactionMonitor.id,
+            calendar_id: calendar.id,
             type: 'income',
           })),
           { transaction },
@@ -70,6 +90,6 @@ export default {
       throw e;
     }
 
-    return { transactionMonitor };
+    return { calendar };
   },
 };

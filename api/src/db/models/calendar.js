@@ -1,6 +1,6 @@
 export default (sequelize, DataTypes) => {
-  const TransactionMonitor = sequelize.define(
-    'TransactionMonitor',
+  const Calendar = sequelize.define(
+    'Calendar',
     {
       name: {
         type: DataTypes.STRING,
@@ -14,6 +14,11 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         field: 'user_id',
       },
+      googleCalendarId: {
+        type: DataTypes.STRING,
+        field: 'google_calendar_id',
+        allowNull: false,
+      },
       createdAt: {
         type: DataTypes.DATE,
         field: 'created_at',
@@ -25,24 +30,24 @@ export default (sequelize, DataTypes) => {
     },
     {
       schema: 'app',
-      tableName: 'transaction_monitors',
+      tableName: 'calendars',
     },
   );
 
-  TransactionMonitor.associate = models => {
-    const { PlaidAccountsTransactionMonitors, PlaidAccount, User } = models;
+  Calendar.associate = models => {
+    const { PlaidAccountsCalendars, PlaidAccount, User } = models;
 
-    TransactionMonitor.User = TransactionMonitor.belongsTo(User, {
+    Calendar.User = Calendar.belongsTo(User, {
       foreignKey: 'user_id',
       as: 'user',
     });
 
-    TransactionMonitor.PlaidAccounts = TransactionMonitor.belongsToMany(PlaidAccount, {
+    Calendar.PlaidAccounts = Calendar.belongsToMany(PlaidAccount, {
       as: 'plaidAccounts',
-      through: PlaidAccountsTransactionMonitors,
+      through: PlaidAccountsCalendars,
       foreignKey: 'account_id',
     });
   };
 
-  return TransactionMonitor;
+  return Calendar;
 };

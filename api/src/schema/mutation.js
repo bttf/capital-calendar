@@ -1,11 +1,11 @@
 import { GraphQLObjectType } from 'graphql';
 import createPlaidItem from './mutation/createPlaidItem';
-import createTransactionMonitor from './mutation/createTransactionMonitor';
+import createCalendar from './mutation/createCalendar';
 
 export default new GraphQLObjectType({
   name: 'Mutation',
   fields: {
     createPlaidItem,
-    createTransactionMonitor,
+    createCalendar,
   },
 });
