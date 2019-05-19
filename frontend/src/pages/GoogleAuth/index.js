@@ -4,7 +4,6 @@ import qs from 'query-string';
 import gql from 'graphql-tag';
 import publicClient from '../../apollo/publicClient';
 import onLogin from '../../apollo/onLogin';
-import { HomeContainer } from '../Home';
 import Text from '../../components/Text';
 
 const AUTH_WITH_CAPCAL = gql`
@@ -30,11 +29,9 @@ export default (props: any) => {
           window.location.href = 'http://localhost:8080/';
         }
         return (
-          <HomeContainer>
-            <Text color="#808080" font="'Arvo', serif" size={48}>
-              Logging you in...
-            </Text>
-          </HomeContainer>
+          <Text color="#808080" font="'Arvo', serif" size={48}>
+            Logging you in...
+          </Text>
         );
       }}
     </Mutation>

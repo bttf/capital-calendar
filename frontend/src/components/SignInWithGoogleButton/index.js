@@ -5,12 +5,12 @@ import { Query } from 'react-apollo';
 
 import publicClient from '../../apollo/publicClient';
 
-const SignInWithGoogleButton = styled('button')`
+export const SignInWithGoogleButton = styled('button')`
   font-family: 'Arvo', serif;
   font-size: 27px;
 
   height: 70px;
-  width: 375px;
+  width: 360px;
 
   display: flex;
   align-items: center;

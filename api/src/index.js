@@ -5,15 +5,19 @@ import schema from './schema';
 import publicSchema from './schema/publicSchema';
 import authRoutes from './routes/auth';
 import cors from 'cors';
+import { genLoaders } from './lib/loaders';
 import { genGoogleOAuthClient } from './lib/auth';
 import bearerAuth from './middleware/bearerAuth';
+import plaidClient from './lib/plaid/client';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(cors());
 app.use(passport.initialize());
+
 app.use('/auth', authRoutes);
+
 app.use('/public/graphql', async (req, res, next) => {
   const context = { googleAuth: genGoogleOAuthClient() };
   return graphqlHTTP({
@@ -21,8 +25,12 @@ app.use('/public/graphql', async (req, res, next) => {
     schema: publicSchema,
   })(req, res, next);
 });
+
 app.use('/graphql', bearerAuth, async (req, res, next) => {
+  const loaders = genLoaders();
   const context = {
+    loaders,
+    plaidClient,
     googleAuth: req.googleAuth,
     viewer: { user: req.user },
   };

@@ -28,6 +28,9 @@ export default (req, res, next) => {
      * If we don't have a refresh token, we can't rely on google client to
      * refresh itself. So we manually validate the token here and kick off
      * the user if the token is invalid for them to reauth manually.
+     *
+     * TODO: Figure out how to deal with this since having no refresh token means
+     * we wont be able to update their calendar after access token expires.
      */
     if (!refreshToken) {
       try {

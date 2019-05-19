@@ -16,8 +16,13 @@ export default (sequelize, DataTypes) => {
   );
 
   User.associate = models => {
-    const { GoogleAuth } = models;
+    const { GoogleAuth, PlaidAccount, PlaidItem } = models;
+
     User.GoogleAuth = User.hasOne(GoogleAuth, { foreignKey: 'user_id', as: 'googleAuth' });
+
+    User.PlaidItem = User.hasMany(PlaidItem, { foreignKey: 'user_id', as: 'plaidItems' });
+
+    User.PlaidAccount = User.hasMany(PlaidAccount, { foreignKey: 'user_id', as: 'plaidAccounts' });
   };
 
   User.findByEntityId = (entityId, options) => {

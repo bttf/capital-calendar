@@ -10,6 +10,7 @@
     "apollo-link-context": "^1.0.17",
     "apollo-link-error": "^1.1.10",
     "apollo-link-http": "^1.5.14",
+    "formik": "^1.5.4",
     "googleapis": "^38.0.0",
     "graphql": "^14.1.1",
     "graphql-tag": "^2.10.1",
@@ -19,6 +20,7 @@
     "react-apollo": "^2.5.3",
     "react-dom": "^16.8.5",
     "react-modal": "^3.8.1",
+    "react-plaid-link": "^1.2.0",
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
     "styled-components": "^4.2.0"

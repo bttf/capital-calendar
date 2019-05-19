@@ -1,73 +1,85 @@
-import React from 'react';
-import gql from 'graphql-tag';
-import styled from 'styled-components';
+import React, { useState } from 'react';
 import { Query } from 'react-apollo';
+import gql from 'graphql-tag';
+
 import Text from '../../components/Text';
-import CreateCalendarCard from './CreateCalendarCard';
-import CalendarBlockingOverlay from './CalendarBlockingOverlay';
+import HomeContext from './HomeContext';
+import BankAccounts from './BankAccounts';
+import Calendars from './Calendars';
 
-export const HomeContainer = styled('div')`
-  display: flex;
-  justify-content: center;
-`;
+export default () => {
+  const [isCreatingCalendar, setIsCreatingCalendar] = useState(false);
+  const [incomeAccountIdsSelected, setIncomeAccountIds] = useState([]);
+  const [expenseAccountIdsSelected, setExpenseAccountIds] = useState([]);
+  const [selectingAccountType, setSelectingAccountType] = useState(null);
 
-const Title = styled('div')`
-  font-family: 'Arvo', serif;
-  color: #808080;
-  font-size: 24px;
-  padding: 0 16px;
-  margin-bottom: 32px;
-`;
+  const submitAccountId = accountId => {
+    if (!selectingAccountType) return;
 
-const ItemContainer = styled('div')`
-  position: relative;
+    const accountIds = [
+      ...(selectingAccountType === 'expenses'
+        ? expenseAccountIdsSelected
+        : incomeAccountIdsSelected),
+    ];
+    const setAccountIds =
+      selectingAccountType === 'expenses' ? setExpenseAccountIds : setIncomeAccountIds;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-`;
+    if (accountIds.includes(accountId)) {
+      accountIds.splice(accountIds.indexOf(accountId), 1);
+    } else {
+      accountIds.push(accountId);
+    }
 
-export default () => (
-  <Query
-    query={gql`
-      query {
-        viewer {
-          user {
-            email
-          }
-        }
-      }
-    `}
-  >
-    {({ loading, error, data }) => {
-      if (loading)
-        return (
-          <HomeContainer>
+    setAccountIds(accountIds);
+  };
+
+  /**
+   * Using context API
+   */
+  const HomeContextValue = {
+    isCreatingCalendar,
+    setIsCreatingCalendar,
+    selectingAccountType,
+    setSelectingAccountType,
+    incomeAccountIdsSelected,
+    setIncomeAccountIds,
+    expenseAccountIdsSelected,
+    setExpenseAccountIds,
+    submitAccountId,
+  };
+
+  return (
+    <Query query={HOME_QUERY}>
+      {({ loading, error, data }) => {
+        if (loading) {
+          return (
             <Text color="#808080" font="'Arvo', serif" size={48}>
               Loading...
             </Text>
-          </HomeContainer>
+          );
+        }
+
+        const viewer = data && data.viewer;
+
+        if (!viewer) return null;
+
+        return (
+          <HomeContext.Provider value={HomeContextValue}>
+            <BankAccounts />
+            <Calendars />
+          </HomeContext.Provider>
         );
+      }}
+    </Query>
+  );
+};
 
-      const viewer = data && data.viewer;
-
-      if (!viewer) return null;
-
-      return (
-        <HomeContainer>
-          <ItemContainer>
-            <Title>Bank Accounts</Title>
-          </ItemContainer>
-
-          <ItemContainer>
-            <Title>Google Calendar</Title>
-            <CreateCalendarCard />
-            <CalendarBlockingOverlay />
-          </ItemContainer>
-        </HomeContainer>
-      );
-    }}
-  </Query>
-);
+const HOME_QUERY = gql`
+  query {
+    viewer {
+      user {
+        email
+      }
+    }
+  }
+`;

@@ -27,6 +27,7 @@ export default (sequelize, DataTypes) => {
 
   GoogleAuth.associate = models => {
     const { User } = models;
+
     GoogleAuth.User = GoogleAuth.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
   };
 

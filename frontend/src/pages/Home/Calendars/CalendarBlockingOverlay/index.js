@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Text from '../../../components/Text';
+import Text from '../../../../components/Text';
 
 const CalendarBlockingOverlay = styled('div')`
   position: absolute;
@@ -15,9 +15,12 @@ const CalendarBlockingOverlay = styled('div')`
 `;
 
 export default () => (
-  <CalendarBlockingOverlay>
-    <Text font="'Arvo', serif" color="white" size={36}>
-      You will need to connect a bank account first. &nbsp; 👈
-    </Text>
-  </CalendarBlockingOverlay>
-);
+  (
+    <CalendarBlockingOverlay>
+      <Text font="'Arvo', serif" color="white" size={36}>
+        You will need to connect a bank account first. &nbsp; 👈
+      </Text>
+    </CalendarBlockingOverlay>
+  ),
+  null
+); // eslint-disable-line
