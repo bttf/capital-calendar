@@ -105,14 +105,20 @@ export default props => {
                 initialValues={{
                   cadence: 'DAILY',
                 }}
-                onSubmit={values => {
-                  createCalendar({
-                    variables: {
-                      ...values,
-                      expenseAccountIds: expenseAccountIdsSelected,
-                      incomeAccountIds: incomeAccountIdsSelected,
-                    },
-                  });
+                onSubmit={async values => {
+                  try {
+                    await createCalendar({
+                      variables: {
+                        ...values,
+                        expenseAccountIds: expenseAccountIdsSelected,
+                        incomeAccountIds: incomeAccountIdsSelected,
+                      },
+                    });
+                    cancelForm();
+                  } catch (e) {
+                    alert('Error');
+                    console.error(e);
+                  }
                 }}
               >
                 {({ values, errors, handleChange, handleSubmit }) => (
