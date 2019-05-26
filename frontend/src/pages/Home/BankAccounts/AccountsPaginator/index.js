@@ -110,6 +110,7 @@ export default class AccountsPaginator extends React.Component {
           return (
             <div>
               {children(accounts)}
+
               <Paginator>
                 <Nav color="#697796" onClick={this.prevPage(fetchMore)}>
                   Prev

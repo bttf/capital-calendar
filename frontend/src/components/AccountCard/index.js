@@ -2,21 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import ItemCard from '../ItemCard';
 
-const ItemCardInner = styled('div')`
-  flex: 1;
-  display: flex;
-  align-items: center;
-
-  padding: 0 32px;
-
-  img {
-    max-height: 24px;
-    width: auto;
-    margin-right: 16px;
-  }
+const Img = styled('img')`
+  max-height: 24px;
+  width: auto;
+  margin-right: 16px;
 `;
 
-const ItemCardDetails = styled('div')`
+const AccountCardDetails = styled('div')`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -65,19 +57,17 @@ export default ({
       highlightRed={highlightRed}
       highlightGreen={highlightGreen}
     >
-      <ItemCardInner>
-        <img src={`data:image/png;base64,${logo}`} alt="Logo" />
-        <ItemCardDetails>
-          <AccountName>{account.name}</AccountName>
-          <AccountInfo>
-            <sub>{institutionName}</sub>
-            <AccountMask>
-              xxxxxxxx
-              {account.mask}
-            </AccountMask>
-          </AccountInfo>
-        </ItemCardDetails>
-      </ItemCardInner>
+      <Img src={`data:image/png;base64,${logo}`} alt="Logo" />
+      <AccountCardDetails>
+        <AccountName>{account.name}</AccountName>
+        <AccountInfo>
+          <sub>{institutionName}</sub>
+          <AccountMask>
+            xxxxxxxx
+            {account.mask}
+          </AccountMask>
+        </AccountInfo>
+      </AccountCardDetails>
     </ItemCard>
   );
 };
