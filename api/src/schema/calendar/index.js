@@ -1,4 +1,10 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLEnumType } from 'graphql';
+import {
+  GraphQLObjectType,
+  GraphQLNonNull,
+  GraphQLString,
+  GraphQLEnumType,
+  GraphQLBoolean,
+} from 'graphql';
 
 export const CalendarCadenceEnumType = new GraphQLEnumType({
   name: 'CalendarCadenceEnum',
@@ -17,6 +23,12 @@ export default new GraphQLObjectType({
     },
     cadence: {
       type: new GraphQLNonNull(CalendarCadenceEnumType),
+    },
+    googleCalendarInSync: {
+      type: new GraphQLNonNull(GraphQLBoolean),
+    },
+    backgroundColor: {
+      type: GraphQLString,
     },
   },
 });
