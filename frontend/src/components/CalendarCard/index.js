@@ -12,7 +12,7 @@ export default props => {
   const { calendar } = props;
 
   return (
-    <ItemCard>
+    <ItemCard borderLeft={calendar.backgroundColor}>
       <CalendarName>{calendar.name}</CalendarName>
     </ItemCard>
   );

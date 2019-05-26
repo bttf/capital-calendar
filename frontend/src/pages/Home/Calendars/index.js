@@ -14,6 +14,8 @@ const CALENDARS_QUERY = gql`
       user {
         calendars {
           name
+          backgroundColor
+          googleCalendarInSync
         }
       }
     }
