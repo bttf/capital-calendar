@@ -8,7 +8,7 @@ import AddYourFirstCalendarButton from './AddYourFirstCalendarButton';
 import CreateCalendarForm from './CreateCalendarForm';
 import CalendarBlockingOverlay from './CalendarBlockingOverlay';
 
-const CALENDARS_QUERY = gql`
+export const CALENDARS_QUERY = gql`
   query Calendars {
     viewer {
       user {
