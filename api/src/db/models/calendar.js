@@ -2,6 +2,7 @@ export default (sequelize, DataTypes) => {
   const Calendar = sequelize.define(
     'Calendar',
     {
+      entityId: { type: DataTypes.STRING, field: 'entity_id' },
       name: {
         type: DataTypes.STRING,
         allowNull: false,

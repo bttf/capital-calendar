@@ -18,6 +18,9 @@ export const CalendarCadenceEnumType = new GraphQLEnumType({
 export default new GraphQLObjectType({
   name: 'Calendar',
   fields: {
+    entityId: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
     name: {
       type: new GraphQLNonNull(GraphQLString),
     },

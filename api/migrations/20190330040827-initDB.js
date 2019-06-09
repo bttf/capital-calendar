@@ -100,6 +100,7 @@ exports.up = function(db) {
 
     CREATE TABLE app.calendars (
       id SERIAL PRIMARY KEY,
+      entity_id uuid NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
       name TEXT NOT NULL,
       cadence calendars_cadence NOT NULL,
       user_id INTEGER NOT NULL REFERENCES app.users ON DELETE CASCADE,
