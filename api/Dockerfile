@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package.json .
 COPY yarn.lock .
 RUN apk add --no-cache make gcc g++ python postgresql-dev && \
-  npm install && \
+  yarn install && \
   apk del make gcc g++ python
 
 COPY . .
