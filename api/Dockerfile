@@ -1,10 +1,12 @@
-FROM node:10.15.3
+FROM node:10-alpine
 
 WORKDIR /app
 
-ADD package.json /app/package.json
-ADD yarn.lock /app/yarn.lock
+COPY package.json .
+COPY yarn.lock .
+RUN apk add --no-cache make gcc g++ python postgresql-dev && \
+  npm install && \
+  apk del make gcc g++ python
 
-RUN ["yarn", "install"]
-
+COPY . .
 CMD ["yarn", "dev"]

@@ -6,7 +6,6 @@ services:
       - '3000:3000'
       - '9229:9229'
     volumes:
-      - ./api:/app
       - /app/node_modules
     depends_on:
       - db
@@ -16,7 +15,7 @@ services:
       PGUSER: postgres
       PGDATABASE: capital-calendar-dev
       PGPASSWORD:
-      PGPORT: 5432
+      PGPORT: "5432"
       AUTH_SECRET: "m0n4l!s4"
       GOOGLE_CLIENT_ID: "$CAPCAL_GOOGLE_CLIENT_ID"
       GOOGLE_CLIENT_SECRET: "$CAPCAL_GOOGLE_CLIENT_SECRET"
