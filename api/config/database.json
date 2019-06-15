@@ -5,6 +5,7 @@
     "user": {"ENV": "PGUSER"},
     "password": {"ENV": "PGPASSWORD"},
     "database": {"ENV": "PGDATABASE"},
-    "port": {"ENV": "PGPORT"}
+    "port": {"ENV": "PGPORT"},
+    "native": true
   }
 }

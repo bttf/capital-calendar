@@ -8,6 +8,7 @@ const sequelize = new Sequelize(PGDATABASE, PGUSER, PGPASSWORD, {
   host: PGHOST,
   post: PGPORT,
   dialect: 'postgres',
+  dialectOptions: { ssl: true },
   pool: {
     max: 5,
     min: 0,
