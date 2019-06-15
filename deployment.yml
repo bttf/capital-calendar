@@ -1,0 +1,34 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: capcal-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: capcal-api
+  template:
+    metadata:
+      labels:
+        name: capcal-api
+    spec:
+      containers:
+        - name: capcal-api
+          image: bttf/capcal:api
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PGHOST
+              value: "db-postgresql-sfo2-66554-do-user-107555-0.db.ondigitalocean.com"
+            - name: PGUSER
+              value: "doadmin"
+            - name: PGPASSWORD 
+              value: "k1dc7473ygisjirk"
+            - name: PGDATABASE
+              value: "defaultdb"
+            - name: PGPORT
+              value: "25060"
+      imagePullSecrets:
+        - name: regcred
