@@ -1,11 +1,9 @@
-# Use the latest 2.1 version of CircleCI pipeline processing engine, see https://circleci.com/docs/2.0/configuration-reference/
 version: 2.1
 
-# Orchestrate or schedule a set of jobs, see https://circleci.com/docs/2.0/workflows/
 jobs:
   deploy_api:
     docker:
-      image: docker:stable-git
+      - image: docker:stable-git
     steps:
       - checkout
       - setup_remote_docker
