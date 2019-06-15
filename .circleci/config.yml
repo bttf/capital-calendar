@@ -12,7 +12,7 @@ workflows:
           - checkout
           - setup_remote_docker
           - run: |
-          TAG=0.1.$CIRCLE_BUILD_NUM
-          docker build -t bttf/capcal:$TAG .     
-          docker login -u $DOCKER_USER -p $DOCKER_PASS
-          docker push bttf/capcal:$TAG
+            TAG=0.1.$CIRCLE_BUILD_NUM
+            docker build -t bttf/capcal:$TAG .     
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push bttf/capcal:$TAG
