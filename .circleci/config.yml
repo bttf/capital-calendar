@@ -3,7 +3,7 @@ version: 2.1
 
 # Orchestrate or schedule a set of jobs, see https://circleci.com/docs/2.0/workflows/
 jobs:
-  deoploy_api:
+  deploy_api:
     docker:
       image: docker:stable-git
     steps:
