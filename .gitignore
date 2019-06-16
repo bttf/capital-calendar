@@ -2,3 +2,4 @@
 node_modules
 scripts/snapshot*
 api/dist
+secret.yaml
