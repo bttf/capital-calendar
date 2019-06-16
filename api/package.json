@@ -7,7 +7,7 @@
   "scripts": {
     "migrate": "db-migrate up --config config/database.json",
     "start": "node dist",
-    "build": "babel src --out-dir dist",
+    "build": "babel ./src --out-dir dist",
     "dev": "nodemon --watch src -e js --exec \"yarn debug\"",
     "debug": "yarn migrate && babel-node --inspect=0.0.0.0:9229 src"
   },

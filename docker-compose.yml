@@ -7,7 +7,7 @@ services:
       - '3000:3000'
       - '9229:9229'
     volumes:
-      - /app/node_modules
+      - /user/src/app/node_modules
     depends_on:
       - db
     environment:
