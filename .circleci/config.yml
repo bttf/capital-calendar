@@ -1,15 +1,24 @@
-# Use the latest 2.1 version of CircleCI pipeline processing engine, see https://circleci.com/docs/2.0/configuration-reference/
 version: 2.1
 
-# Use a package of configuration called an orb, see https://circleci.com/docs/2.0/orb-intro/
-orbs:
-  # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.3.1
-
-# Orchestrate or schedule a set of jobs, see https://circleci.com/docs/2.0/workflows/
+jobs:
+  deploy_api:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run: |
+          TAG=0.1.$CIRCLE_BUILD_NUM
+          cd api
+          yarn && yarn build
+          tar czf capcal-api-$TAG.tar.gz dist
+          scp capcal-api-$TAG.tar.gz bttf@capcal.redpine.software:/home/bttf
+          ssh bttf@capcal.redpine.software "~/deploy-capcal-api.sh capcal-api-$TAG.tar.gz"
+          cd ../frontend
+          yarn && yarn build -prod
+          tar czf capcal-frontend-$TAG.tar.gz build
+          scp capcal-frontend-$TAG.tar.gz bttf@capcal.redpine.software:/home/bttf
+          ssh bttf@capcal.redpine.software "~/deploy-capcal-frontend.sh capcal-frontend-$TAG.tar.gz"
 workflows:
-  # Name the workflow "Welcome"
-  Welcome:
-    # Run the welcome/run job in its own container
+  capcal-web-app:
     jobs:
-      - welcome/run
+      - deploy_api
