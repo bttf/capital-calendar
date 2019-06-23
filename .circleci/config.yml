@@ -5,6 +5,9 @@ jobs:
     docker:
       - image: circleci/node:10
     steps:
+      - add_ssh_keys:
+        fingerprints:
+          - "b4:6e:bc:f0:11:ee:24:c0:aa:47:6a:60:7f:9f:1e:92"
       - checkout
       - run: |
           TAG=0.1.$CIRCLE_BUILD_NUM
