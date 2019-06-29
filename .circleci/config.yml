@@ -14,6 +14,7 @@ jobs:
           docker login -u $DOCKER_USER -p $DOCKER_PASS
           docker push bttf/capcal:$TAG
           docker push bttf/capcal:latest
+          kubectl --record deployment.apps/capcal-api set image deployment.v1.apps/capcal-api capcal-api=bttf/capcal:$TAG
 
 workflows:
   capcal-web-app:
