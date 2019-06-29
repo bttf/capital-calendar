@@ -8,13 +8,24 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: |
-          TAG=0.1.$CIRCLE_BUILD_NUM
+          TAG=$CIRCLE_SHA1
           cd api
           docker build -t bttf/capcal:latest -t bttf/capcal:$TAG . 
           docker login -u $DOCKER_USER -p $DOCKER_PASS
           docker push bttf/capcal:$TAG
           docker push bttf/capcal:latest
-          kubectl --record deployment.apps/capcal-api set image deployment.v1.apps/capcal-api capcal-api=bttf/capcal:$TAG
+      - run:
+          name: Install envsubst
+          command: |
+            sudo apt-get update && sudo apt-get -y install gettext-base
+      - run:
+          name: Install kubectl
+          command: |
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+            chmod u+x ./kubectl
+      - run:
+          name: Deploy
+          command: ./kube/ci-deploy.sh
 
 workflows:
   capcal-web-app:
