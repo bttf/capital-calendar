@@ -1,12 +1,27 @@
-FROM node:10-alpine
+FROM node:10-alpine as builder
 
-WORKDIR /app
-
-COPY package.json .
-COPY yarn.lock .
-RUN apk add --no-cache make gcc g++ python postgresql-dev && \
-  npm install && \
-  apk del make gcc g++ python
+COPY package*.json ./
 
 COPY . .
-CMD ["yarn", "dev"]
+
+# This should be optimized to prune dependencies for production usage. Currently
+# we install all dependencies including those needed for development.
+RUN apk add --no-cache make gcc g++ python postgresql-dev && \
+  yarn install && \
+  yarn build
+
+FROM node:10-alpine
+
+WORKDIR /user/src/app
+
+# We need this to run pg-native it seems
+RUN apk add --no-cache postgresql-dev
+
+COPY --from=builder node_modules node_modules
+COPY --from=builder dist dist
+
+# This can be optimized since we only need dist/ and node_modules/ to run in
+# prod. This is in place so that it works in development.
+COPY . .
+
+CMD ["yarn", "start"]

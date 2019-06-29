@@ -1,0 +1,91 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: capcal-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: capcal-api
+  template:
+    metadata:
+      labels:
+        name: capcal-api
+    spec:
+      containers:
+        - name: capcal-api
+          image: bttf/capcal:$COMMIT_SHA1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: PGHOST
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: PGUSER
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: PGPASSWORD
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: PGDATABASE
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: PGPORT
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: GOOGLE_CLIENT_ID
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: GOOGLE_CLIENT_SECRET
+            - name: GOOGLE_CALLBACK_URL
+              value: https://capcal.redpine.software/google
+            - name: PLAID_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: PLAID_CLIENT_ID
+            - name: PLAID_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: PLAID_SECRET
+            - name: PLAID_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: PLAID_PUBLIC_KEY
+            - name: PLAID_PRODUCTS
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: PLAID_PRODUCTS
+            - name: PLAID_ENV
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: PLAID_ENV
+            - name: AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: AUTH_SECRET
+      imagePullSecrets:
+        - name: regcred
