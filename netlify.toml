@@ -1,7 +1,7 @@
 [build]
   base    = "frontend"
   command = "yarn build -prod"
-  publish = "frontend/dist"
+  publish = "frontend/build"
 
 [context.production]
   TEST_ENV_VAR="placeholder for whats to come"
