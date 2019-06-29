@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   deploy_api:
     docker:
-      - image: docker:stable-git
+      - image: circleci/node:dubnium
     steps:
       - checkout
       - setup_remote_docker
