@@ -1,9 +1,10 @@
 import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { CAPCAL_API_HOST } from '../constants';
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:3000/public/graphql',
+  uri: `${CAPCAL_API_HOST}/public/graphql`,
 });
 
 const client = new ApolloClient({

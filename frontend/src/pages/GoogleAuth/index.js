@@ -26,7 +26,7 @@ export default (props: any) => {
           authWithGoogle({ variables: { code } });
         } else if (called && !loading && data) {
           onLogin({ token: data.authWithGoogle.token });
-          window.location.href = 'http://localhost:8080/';
+          window.location.href = '/';
         }
         return (
           <Text color="#808080" font="'Arvo', serif" size={48}>

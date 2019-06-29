@@ -4,12 +4,13 @@ import { HttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { onError } from 'apollo-link-error';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { CAPCAL_API_HOST } from '../constants';
 
 import { LOCAL_STORAGE_CAPCAL_TOKEN_PATH } from '../constants';
 import onLogout from './onLogout';
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:3000/graphql',
+  uri: `${CAPCAL_API_HOST}/graphql`,
 });
 
 const authLink = setContext((request, prevContext) => {
