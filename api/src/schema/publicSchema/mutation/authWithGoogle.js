@@ -21,6 +21,8 @@ export default {
   resolve: async (_, { code }, { googleAuth }) => {
     let tokens;
 
+    console.log('Mutation');
+
     try {
       ({ tokens } = await googleAuth.getToken(code));
     } catch (e) {
@@ -29,6 +31,7 @@ export default {
       return { errors: [{ message: 'An error occured' }], token: null };
     }
 
+    console.log('googleAuth.setCredentials called');
     googleAuth.setCredentials(tokens);
 
     let email;
@@ -36,6 +39,7 @@ export default {
     const { access_token: accessToken, refresh_token: refreshToken } = tokens;
 
     try {
+      console.log('Fetching email');
       email = await new Promise((resolve, reject) => {
         google.oauth2('v2').userinfo.get({ auth: googleAuth }, (err, res) => {
           if (err) reject(err);
@@ -54,11 +58,18 @@ export default {
       return { errors: [{ message: 'An error occured' }], token: null };
     }
 
-    await db.GoogleAuth.upsert({
-      accessToken,
-      refreshToken: refreshToken ? refreshToken : undefined,
-      userId: user.id,
-    });
+    console.log('db.GoogleAuth.upsert');
+    try {
+      await db.GoogleAuth.upsert({
+        accessToken,
+        refreshToken: refreshToken ? refreshToken : undefined,
+        userId: user.id,
+      });
+    } catch(e) {
+      // eslint-disable-next-line
+      console.error(e);
+      return { errors: [{ message: 'An error occured' }], token: null };
+    }
 
     return {
       token: generateToken(user.toJSON(), '365d'),
