@@ -9,11 +9,11 @@ console.log('PGDATABASE', PGDATABASE);
 console.log('PGUSER', PGUSER);
 console.log('PGPASSWORD', PGPASSWORD);
 console.log('PGHOST', PGHOST);
-console.log('PGPORT', PGPORT );
+console.log('PGPORT', PGPORT);
 
 const sequelize = new Sequelize(PGDATABASE, PGUSER, PGPASSWORD, {
   host: PGHOST,
-  post: PGPORT,
+  port: PGPORT,
   dialect: 'postgres',
   dialectOptions: { ssl: NODE_ENV === 'production' },
   pool: {
