@@ -30,7 +30,7 @@ jobs:
 workflows:
   capcal-web-app:
     jobs:
-      - deploy_api
+      - deploy_api:
           filters:
             branches:
               only: master
