@@ -49,6 +49,7 @@ export default {
 
       if (!email) throw new Error('No email returned from google auth');
 
+      console.log('user find or create call');
       [user] = await db.User.findOrCreate({
         where: { email },
       });
@@ -65,7 +66,7 @@ export default {
         refreshToken: refreshToken ? refreshToken : undefined,
         userId: user.id,
       });
-    } catch(e) {
+    } catch (e) {
       // eslint-disable-next-line
       console.error(e);
       return { errors: [{ message: 'An error occured' }], token: null };

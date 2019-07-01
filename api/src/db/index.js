@@ -4,6 +4,8 @@ import Sequelize from 'sequelize';
 
 const { NODE_ENV, PGDATABASE, PGUSER, PGPASSWORD, PGHOST, PGPORT } = process.env;
 
+console.log('NODE_ENV', NODE_ENV);
+
 const sequelize = new Sequelize(PGDATABASE, PGUSER, PGPASSWORD, {
   host: PGHOST,
   post: PGPORT,
