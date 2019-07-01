@@ -54,11 +54,17 @@ export default {
       return { errors: [{ message: 'An error occured' }], token: null };
     }
 
-    await db.GoogleAuth.upsert({
-      accessToken,
-      refreshToken: refreshToken ? refreshToken : undefined,
-      userId: user.id,
-    });
+    try {
+      await db.GoogleAuth.upsert({
+        accessToken,
+        refreshToken: refreshToken ? refreshToken : undefined,
+        userId: user.id,
+      });
+    } catch (e) {
+      // eslint-disable-next-line
+      console.error(e);
+      return { errors: [{ message: 'An error occured' }], token: null };
+    }
 
     return {
       token: generateToken(user.toJSON(), '365d'),

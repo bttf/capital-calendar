@@ -1,0 +1,36 @@
+version: 2.1
+
+jobs:
+  deploy_api:
+    docker:
+      - image: circleci/node:dubnium
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: |
+          TAG=$CIRCLE_SHA1
+          cd api
+          docker build -t bttf/capcal:latest -t bttf/capcal:$TAG . 
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker push bttf/capcal:$TAG
+          docker push bttf/capcal:latest
+      - run:
+          name: Install envsubst
+          command: |
+            sudo apt-get update && sudo apt-get -y install gettext-base
+      - run:
+          name: Install kubectl
+          command: |
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+            chmod u+x ./kubectl
+      - run:
+          name: Deploy
+          command: ./scripts/ci-deploy.sh
+
+workflows:
+  capcal-web-app:
+    jobs:
+      - deploy_api:
+          filters:
+            branches:
+              only: master

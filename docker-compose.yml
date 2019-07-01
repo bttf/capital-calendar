@@ -2,11 +2,12 @@ version: '3'
 services:
   api:
     build: api
+    command: yarn dev
     ports:
       - '3000:3000'
       - '9229:9229'
     volumes:
-      - /app/node_modules
+      - /user/src/app/node_modules
     depends_on:
       - db
     environment:

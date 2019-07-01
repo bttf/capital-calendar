@@ -1,12 +1,24 @@
-FROM node:10-alpine
+FROM node:10-alpine as builder
 
-WORKDIR /app
-
-COPY package.json .
-COPY yarn.lock .
-RUN apk add --no-cache make gcc g++ python postgresql-dev && \
-  npm install && \
-  apk del make gcc g++ python
+COPY package*.json ./
 
 COPY . .
-CMD ["yarn", "dev"]
+
+RUN apk add --no-cache make gcc g++ python postgresql-dev && \
+  yarn install && \
+  yarn build
+
+FROM node:10-alpine
+
+WORKDIR /user/src/app
+
+# We need this to run pg-native it seems
+RUN apk add --no-cache postgresql-dev
+
+COPY --from=builder node_modules node_modules
+COPY --from=builder dist dist
+
+# Needed for development
+COPY . .
+
+CMD ["yarn", "start"]
