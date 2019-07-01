@@ -4,9 +4,6 @@ jobs:
   deploy_api:
     docker:
       - image: circleci/node:dubnium
-    branches:
-      only:
-        - master
     steps:
       - checkout
       - setup_remote_docker
@@ -34,3 +31,6 @@ workflows:
   capcal-web-app:
     jobs:
       - deploy_api
+          filters:
+            branches:
+              only: master
