@@ -2,13 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
 
-const { PGDATABASE, PGUSER, PGPASSWORD, PGHOST, PGPORT } = process.env;
+const { NODE_ENV, PGDATABASE, PGUSER, PGPASSWORD, PGHOST, PGPORT } = process.env;
 
 const sequelize = new Sequelize(PGDATABASE, PGUSER, PGPASSWORD, {
   host: PGHOST,
   post: PGPORT,
   dialect: 'postgres',
-  dialectOptions: { ssl: true },
+  dialectOptions: { ssl: NODE_ENV === 'production' },
   pool: {
     max: 5,
     min: 0,
