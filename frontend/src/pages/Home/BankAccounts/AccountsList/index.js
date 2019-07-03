@@ -25,20 +25,6 @@ const AccountsListEmphasizer = styled('div')`
 export default props => {
   const { accounts = [] } = props;
 
-  const noop = () => {};
-
-  const onClick = ({ accountId, accountIdsSelected, setSelectedAccountIds }) => () => {
-    const newSelectedAccountIds = [...accountIdsSelected];
-
-    if (accountIdsSelected.includes(accountId)) {
-      newSelectedAccountIds.splice(accountIdsSelected.indexOf(accountId), 1);
-    } else {
-      newSelectedAccountIds.push(accountId);
-    }
-
-    setSelectedAccountIds(newSelectedAccountIds);
-  };
-
   return (
     <HomeContext.Consumer>
       {({

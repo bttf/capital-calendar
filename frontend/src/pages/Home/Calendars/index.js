@@ -12,6 +12,9 @@ export const CALENDARS_QUERY = gql`
   query Calendars {
     viewer {
       user {
+        accounts(limit: 1) {
+          name
+        }
         calendars {
           name
           backgroundColor
@@ -27,6 +30,7 @@ export default props => {
     <Query query={CALENDARS_QUERY}>
       {({ loading, error, data }) => {
         const calendars = loading || !data ? [] : data.viewer.user.calendars;
+        const accounts = loading || !data ? [] : data.viewer.user.accounts;
 
         if (loading) {
           return (
@@ -67,7 +71,7 @@ export default props => {
                   />
                 )}
 
-                <CalendarBlockingOverlay />
+                {!accounts.length && <CalendarBlockingOverlay />}
               </ItemContainer>
             )}
           </HomeContext.Consumer>

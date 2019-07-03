@@ -95,6 +95,8 @@ export default props => {
   return (
     <Mutation mutation={CREATE_CALENDAR} refetchQueries={() => [{ query: CALENDARS_QUERY }]}>
       {(createCalendar, { called, data, loading }) => {
+        if (loading) return 'Loading...';
+
         return (
           <HomeContext.Consumer>
             {({
@@ -104,9 +106,7 @@ export default props => {
               expenseAccountIdsSelected,
             }) => (
               <Formik
-                initialValues={{
-                  cadence: 'DAILY',
-                }}
+                initialValues={{ cadence: 'DAILY' }}
                 onSubmit={async values => {
                   setIsCreating(true);
                   try {

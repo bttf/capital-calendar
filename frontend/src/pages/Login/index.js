@@ -39,8 +39,19 @@ export default class Login extends React.Component {
       <LoginContainer>
         <IntroContainer>
           <P>
-            Connect your 🏦 <strong>bank</strong> with 🗓 <strong>Google calendar</strong>, and let
-            us show you how much 💸 <strong>money</strong> you spend <strong>every day</strong>.
+            Connect your{' '}
+            <span role="img" aria-label="bank emoji">
+              🏦
+            </span>{' '}
+            <strong>bank</strong> with{' '}
+            <span role="img" aria-label="calendar emoji">
+              🗓
+            </span>{' '}
+            <strong>Google calendar</strong>, and let us show you how much{' '}
+            <span role="img" aria-label="money with wings emoji">
+              💸
+            </span>{' '}
+            <strong>money</strong> you spend <strong>every day</strong>.
           </P>
           <P>
             Rest easy knowing that we won’t use your data for <strong>anything else</strong>. See
