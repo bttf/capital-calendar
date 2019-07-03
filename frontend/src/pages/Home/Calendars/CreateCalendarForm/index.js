@@ -1,26 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Formik, Field } from 'formik';
 import styled from 'styled-components';
 import Button from '../../../../components/Button';
 import HomeContext from '../../HomeContext';
+import { CALENDARS_QUERY } from '../../Calendars';
 import CadenceSelector from './CadenceSelector';
 
 const CREATE_CALENDAR = gql`
   mutation CreateCalendar(
     $name: String!
-    $cadence: TransactionMonitorCadenceEnum!
+    $cadence: CalendarCadenceEnum!
     $expenseAccountIds: [String!]!
     $incomeAccountIds: [String!]!
   ) {
-    createTransactionMonitor(
+    createCalendar(
       name: $name
       cadence: $cadence
       expenseAccountIds: $expenseAccountIds
       incomeAccountIds: $incomeAccountIds
     ) {
-      transactionMonitor {
+      calendar {
         name
         cadence
       }
@@ -89,10 +90,13 @@ const SaveButton = styled(Button, { type: 'submit' })`
 
 export default props => {
   const { cancelForm } = props;
+  const [isCreating, setIsCreating] = useState(false);
 
   return (
-    <Mutation mutation={CREATE_CALENDAR}>
+    <Mutation mutation={CREATE_CALENDAR} refetchQueries={() => [{ query: CALENDARS_QUERY }]}>
       {(createCalendar, { called, data, loading }) => {
+        if (loading) return 'Loading...';
+
         return (
           <HomeContext.Consumer>
             {({
@@ -102,17 +106,23 @@ export default props => {
               expenseAccountIdsSelected,
             }) => (
               <Formik
-                initialValues={{
-                  cadence: 'DAILY',
-                }}
-                onSubmit={values => {
-                  createCalendar({
-                    variables: {
-                      ...values,
-                      expenseAccountIds: expenseAccountIdsSelected,
-                      incomeAccountIds: incomeAccountIdsSelected,
-                    },
-                  });
+                initialValues={{ cadence: 'DAILY' }}
+                onSubmit={async values => {
+                  setIsCreating(true);
+                  try {
+                    await createCalendar({
+                      variables: {
+                        ...values,
+                        expenseAccountIds: expenseAccountIdsSelected,
+                        incomeAccountIds: incomeAccountIdsSelected,
+                      },
+                    });
+                    cancelForm();
+                  } catch (e) {
+                    setIsCreating(false);
+                    alert('Error');
+                    console.error(e);
+                  }
                 }}
               >
                 {({ values, errors, handleChange, handleSubmit }) => (
@@ -165,8 +175,12 @@ export default props => {
                       </AccountSelectorButton>
                     </CreateCalendarFormContainer>
                     <ButtonsContainer>
-                      <CancelButton onClick={cancelForm}>Cancel</CancelButton>
-                      <SaveButton>Save calendar</SaveButton>
+                      <CancelButton disabled={isCreating} onClick={cancelForm}>
+                        Cancel
+                      </CancelButton>
+                      <SaveButton disabled={isCreating}>
+                        {isCreating ? 'Saving...' : 'Save calendar'}
+                      </SaveButton>
                     </ButtonsContainer>
                   </form>
                 )}

@@ -49,6 +49,14 @@ export const ItemCardContainer = styled('div')`
   transition: all 500ms;
 `;
 
+const ItemCardInner = styled('div')`
+  flex: 1;
+  display: flex;
+  align-items: center;
+
+  padding: 0 32px;
+`;
+
 const HighlightContainer = styled('div')`
   position: absolute;
   top: 8px;
@@ -105,7 +113,8 @@ export default class ItemCard extends React.Component {
         background={background}
         isDashedBorder={isDashedBorder}
       >
-        {children}
+        <ItemCardInner>{children}</ItemCardInner>
+
         {(highlightRed || highlightGreen) && (
           <HighlightContainer>
             {highlightRed && <HighlightRed>{highlightRed}</HighlightRed>}

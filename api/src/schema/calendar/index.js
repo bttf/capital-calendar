@@ -1,10 +1,37 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
+import {
+  GraphQLObjectType,
+  GraphQLNonNull,
+  GraphQLString,
+  GraphQLEnumType,
+  GraphQLBoolean,
+} from 'graphql';
+
+export const CalendarCadenceEnumType = new GraphQLEnumType({
+  name: 'CalendarCadenceEnum',
+  values: {
+    DAILY: { value: 'daily' },
+    WEEKLY: { value: 'weekly' },
+    MONTHLY: { value: 'monthly' },
+  },
+});
 
 export default new GraphQLObjectType({
   name: 'Calendar',
   fields: {
+    entityId: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
     name: {
       type: new GraphQLNonNull(GraphQLString),
+    },
+    cadence: {
+      type: new GraphQLNonNull(CalendarCadenceEnumType),
+    },
+    googleCalendarInSync: {
+      type: new GraphQLNonNull(GraphQLBoolean),
+    },
+    backgroundColor: {
+      type: GraphQLString,
     },
   },
 });

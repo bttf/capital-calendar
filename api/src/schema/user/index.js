@@ -1,6 +1,7 @@
 import { GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
-import AccountsType from '../account';
-import db from '../../db';
+import AccountType from '../account';
+import CalendarType from '../calendar';
+import { getUserAccounts, getUserCalendars } from './resolvers';
 
 export default new GraphQLObjectType({
   name: 'User',
@@ -12,19 +13,16 @@ export default new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLString),
     },
     accounts: {
-      type: new GraphQLList(AccountsType),
+      type: new GraphQLList(AccountType),
       args: {
         offset: { type: GraphQLInt },
         limit: { type: GraphQLInt },
       },
-      resolve: (user, args) => {
-        return db.PlaidAccount.findAll({
-          where: { userId: user.id },
-          offset: args.offset || undefined,
-          limit: args.limit || undefined,
-          order: [['createdAt', 'DESC'], ['accountId', 'ASC']],
-        });
-      },
+      resolve: getUserAccounts,
+    },
+    calendars: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(CalendarType))),
+      resolve: getUserCalendars,
     },
   },
 });

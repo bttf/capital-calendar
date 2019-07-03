@@ -55,7 +55,7 @@ export default () => (
 
       return (
         <SignInWithGoogleButton onClick={openURL}>
-          <img src="/g-logo.png" style={{ height: '48px', width: '48px' }} />
+          <img src="/g-logo.png" alt="google logo" style={{ height: '48px', width: '48px' }} />
           Sign in with Google
         </SignInWithGoogleButton>
       );
