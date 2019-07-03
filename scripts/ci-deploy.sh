@@ -5,8 +5,8 @@ COMMIT_SHA1=$CIRCLE_SHA1
 
 export COMMIT_SHA1=$COMMIT_SHA1
 
-envsubst <./kube/deployment.yml >./kube/deployment.yml.out
-mv ./kube/deployment.yml.out ./kube/deployment.yml
+envsubst <./scripts/kube/deployment.yml >./scripts/kube/deployment.yml.out
+mv ./scripts/kube/deployment.yml.out ./scripts/kube/deployment.yml
 
 echo "$KUBERNETES_CLUSTER_CERTIFICATE" | base64 --decode > cert.crt
 
@@ -15,4 +15,4 @@ echo "$KUBERNETES_CLUSTER_CERTIFICATE" | base64 --decode > cert.crt
   --server=$KUBERNETES_SERVER \
   --certificate-authority=cert.crt \
   --token=$KUBERNETES_TOKEN \
-  apply -f ./kube
+  apply -f ./scripts/kube
