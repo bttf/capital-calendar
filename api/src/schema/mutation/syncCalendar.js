@@ -15,7 +15,9 @@ export default {
       type: new GraphQLNonNull(GraphQLString),
     },
   },
-  resolve: (_, args) => {
+  resolve: () => {
+    // TODO later; after webhook handlers are done
+    //
     // Fetch transactions in the last 30 days
     // Divy up into dates
     // Create events!!!!!!!!!!!!!!!
