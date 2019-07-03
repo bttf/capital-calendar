@@ -33,7 +33,7 @@ export default {
           {
             itemId,
             accessToken,
-            institutionId,
+            plaidInstitutionId: institutionId,
             userId: viewer.user.id,
           },
           { transaction },
