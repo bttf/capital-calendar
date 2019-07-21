@@ -5,8 +5,15 @@ COMMIT_SHA1=$CIRCLE_SHA1
 
 export COMMIT_SHA1=$COMMIT_SHA1
 
+# TODO - This sucks
 envsubst <./scripts/kube/deployment.yml >./scripts/kube/deployment.yml.out
 mv ./scripts/kube/deployment.yml.out ./scripts/kube/deployment.yml
+
+envsubst <./scripts/kube/plaid_bookkeeper_deployment.yml >./scripts/kube/plaid_bookkeeper_deployment.yml.out
+mv ./scripts/kube/plaid_bookkeeper_deployment.yml.out ./scripts/kube/plaid_bookkeeper_deployment.yml
+
+envsubst <./scripts/kube/plaid_webhook_handler_deployment.yml >./scripts/kube/plaid_webhook_handler_deployment.yml.out
+mv ./scripts/kube/plaid_webhook_handler_deployment.yml.out ./scripts/kube/plaid_webhook_handler_deployment.yml
 
 echo "$KUBERNETES_CLUSTER_CERTIFICATE" | base64 --decode > cert.crt
 
