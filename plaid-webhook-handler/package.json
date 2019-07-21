@@ -1,0 +1,24 @@
+{
+  "name": "plaid-webhook-handler",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "start:prod": "node dist",
+    "build": "babel ./src --out-dir dist",
+    "dev": "nodemon --watch src -e js --exec \"yarn debug\"",
+    "debug": "babel-node --inspect=0.0.0.0:9231 src"
+  },
+  "dependencies": {
+    "bull": "^3.10.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.4.0",
+    "@babel/node": "^7.2.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
+    "eslint": "^5.15.3",
+    "nodemon": "^1.19.1"
+  }
+}

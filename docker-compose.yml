@@ -27,6 +27,26 @@ services:
       PLAID_PUBLIC_KEY: "$CAPCAL_PLAID_PUBLIC_KEY"
       PLAID_PRODUCTS: "$CAPCAL_PLAID_PRODUCTS"
       PLAID_ENV: "$CAPCAL_PLAID_ENV"
+  plaid-bookkeeper:
+    build: plaid-bookkeeper
+    command: yarn dev
+    ports:
+      - '3001:3001'
+      - '9230:9230'
+    volumes:
+      - ./plaid-bookkeeper:/user/src/app
+      - /user/src/app/node_modules
+    depends_on:
+      - redis
+  plaid-webhook-handler:
+    build: plaid-webhook-handler
+    command: yarn dev
+    ports:
+      - '3002:3002'
+      - '9231:9231'
+    volumes:
+      - ./plaid-webhook-handler:/user/src/app
+      - /user/src/app/node_modules
   db:
     image: postgres
     environment:
@@ -35,3 +55,7 @@ services:
       POSTGRES_DB: capital-calendar-dev
     ports:
       - '15432:5432'
+  redis:
+    image: redis
+    ports:
+      - '6379:6379'
