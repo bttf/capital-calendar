@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  deploy_api:
+  deploy:
     docker:
       - image: circleci/node:dubnium
     steps:
@@ -10,10 +10,24 @@ jobs:
       - run: |
           TAG=$CIRCLE_SHA1
           cd api
-          docker build -t bttf/capcal:latest -t bttf/capcal:$TAG . 
+          docker build -t bttf/capcal:latest -t bttf/capcal:$TAG .
           docker login -u $DOCKER_USER -p $DOCKER_PASS
           docker push bttf/capcal:$TAG
           docker push bttf/capcal:latest
+      - run: |
+          TAG=$CIRCLE_SHA1
+          cd plaid-bookkeeper
+          docker build -t bttf/capcal-bookkeeper:latest -t bttf/capcal-bookkeeper:$TAG .
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker push bttf/capcal-bookkeeper:$TAG
+          docker push bttf/capcal-bookkeeper:latest
+      - run: |
+          TAG=$CIRCLE_SHA1
+          cd plaid-webhook-handler
+          docker build -t bttf/capcal-webhook-handler:latest -t bttf/capcal-webhook-handler:$TAG .
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker push bttf/capcal-webhook-handler:$TAG
+          docker push bttf/capcal-webhook-handler:latest
       - run:
           name: Install envsubst
           command: |
@@ -26,11 +40,10 @@ jobs:
       - run:
           name: Deploy
           command: ./scripts/ci-deploy.sh
-
 workflows:
   capcal-web-app:
     jobs:
-      - deploy_api:
+      - deploy:
           filters:
             branches:
               only: master

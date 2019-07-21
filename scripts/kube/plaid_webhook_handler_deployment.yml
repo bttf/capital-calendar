@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: capcal-webhook-handler
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: capcal-webhook-handler
+  template:
+    metadata:
+      labels:
+        name: capcal-webhook-handler
+    spec:
+      containers:
+        - name: capcal-webhook-handler
+          image: bttf/capcal-webhook-handler:$COMMIT_SHA1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3002
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: REDIS_HOST
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: REDIS_PASSWORD
+      imagePullSecrets:
+        - name: regcred

@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: capcal-bookkeeper
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: capcal-bookkeeper
+  template:
+    metadata:
+      labels:
+        name: capcal-bookkeeper
+    spec:
+      containers:
+        - name: capcal-bookkeeper
+          image: bttf/capcal-bookkeeper:$COMMIT_SHA1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3001
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: REDIS_HOST
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: REDIS_PASSWORD
+      imagePullSecrets:
+        - name: regcred
