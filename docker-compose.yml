@@ -36,6 +36,9 @@ services:
     volumes:
       - ./plaid-bookkeeper:/user/src/app
       - /user/src/app/node_modules
+    environment:
+      PORT: 3001
+      REDIS_HOST: redis
     depends_on:
       - redis
   plaid-webhook-handler:
@@ -47,6 +50,11 @@ services:
     volumes:
       - ./plaid-webhook-handler:/user/src/app
       - /user/src/app/node_modules
+    environment:
+      PORT: 3002
+      REDIS_HOST: redis
+    depends_on:
+      - redis
   db:
     image: postgres
     environment:
