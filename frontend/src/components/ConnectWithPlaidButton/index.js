@@ -4,7 +4,7 @@ import { Mutation } from 'react-apollo';
 import styled from 'styled-components';
 import PlaidLink from 'react-plaid-link';
 import { USER_QUERY } from '../../pages/Home/BankAccounts';
-import { PLAID_PUBLIC_KEY } from '../../constants';
+import { PLAID_ITEM_WEBHOOK, PLAID_PUBLIC_KEY } from '../../constants';
 
 const ConnectWithPlaidButton = styled(PlaidLink)`
   font-family: 'Arvo', serif;
@@ -68,6 +68,7 @@ export default () => {
             env="sandbox"
             product={['transactions']}
             publicKey={PLAID_PUBLIC_KEY}
+            webhook={PLAID_ITEM_WEBHOOK}
             onExit={() => {}}
             onSuccess={(publicToken, metadata) => {
               console.log('onSuccess: metadata', metadata);
