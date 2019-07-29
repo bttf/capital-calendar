@@ -57,6 +57,9 @@ const CREATE_PLAID_ITEM = gql`
 export default () => {
   const [isLoading, setIsLoading] = useState(false);
 
+  // eslint-disable-next-line no-console
+  console.log('DEBUG webhook', PLAID_ITEM_WEBHOOK);
+
   return (
     <Mutation mutation={CREATE_PLAID_ITEM} refetchQueries={() => [{ query: USER_QUERY }]}>
       {(createPlaidItem, { called, data, loading }) => {

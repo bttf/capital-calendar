@@ -14,6 +14,9 @@ export default async (user, _args, { googleAuth }) => {
     where: { userId: user.id },
   });
 
+  // eslint-disable-next-line no-console
+  console.log('DEBUG Calendars', calendars);
+
   return calendars.map(c => {
     const googleCalendar = googleCalendars[c.googleCalendarId] || {};
     return {
