@@ -8,3 +8,25 @@ spec:
     targetPort: 3000
   selector:
     name: capcal-api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: capcal-bookkeeper
+spec:
+  ports:
+  - port: 80
+    targetPort: 3001
+  selector:
+    name: capcal-bookkeeper
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: capcal-webhook-handler
+spec:
+  ports:
+  - port: 80
+    targetPort: 3002
+  selector:
+    name: capcal-webhook-handler
