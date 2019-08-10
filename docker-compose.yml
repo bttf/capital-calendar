@@ -27,6 +27,7 @@ services:
       PLAID_PUBLIC_KEY: "$CAPCAL_PLAID_PUBLIC_KEY"
       PLAID_PRODUCTS: "$CAPCAL_PLAID_PRODUCTS"
       PLAID_ENV: "$CAPCAL_PLAID_ENV"
+      RPC_SECRET: "coltr4n3"
   plaid-bookkeeper:
     build: plaid-bookkeeper
     command: yarn dev
@@ -39,6 +40,9 @@ services:
     environment:
       PORT: 3001
       REDIS_HOST: redis
+      RPC_HOST: api
+      RPC_PORT: 3000
+      RPC_SECRET: "coltr4n3"
     depends_on:
       - redis
   plaid-webhook-handler:

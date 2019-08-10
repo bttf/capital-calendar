@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: capcal-api
-          image: bttf/capcal:$COMMIT_SHA1
+          image: bttf/capcal:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3000

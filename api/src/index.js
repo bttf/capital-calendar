@@ -1,5 +1,8 @@
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
+import bodyParser from 'body-parser';
+import jayson from 'jayson/promise';
+import rpcMethods from './rpc';
 import passport from './middleware/passport';
 import schema from './schema';
 import publicSchema from './schema/publicSchema';
@@ -8,13 +11,16 @@ import cors from 'cors';
 import { genLoaders } from './lib/loaders';
 import { genGoogleOAuthClient } from './lib/auth';
 import bearerAuth from './middleware/bearerAuth';
+import rpcAuth from './middleware/rpcAuth';
 import plaidClient from './lib/plaid/client';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
+const jaysonServer = jayson.server(rpcMethods);
 
 app.use(cors());
 app.use(passport.initialize());
+app.use(bodyParser.json());
 
 app.use('/auth', authRoutes);
 
@@ -39,6 +45,8 @@ app.use('/graphql', bearerAuth, async (req, res, next) => {
     context,
   })(req, res, next);
 });
+
+app.use(rpcAuth, jaysonServer.middleware());
 
 app.listen(PORT, () => {
   //eslint-disable-next-line no-console

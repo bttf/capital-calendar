@@ -4,7 +4,8 @@ COPY package*.json ./
 
 COPY . .
 
-RUN yarn install && \
+RUN apk add --no-cache make gcc g++ python && \
+  yarn install && \
   yarn build
 
 FROM node:10-alpine
