@@ -89,5 +89,10 @@ spec:
                 secretKeyRef:
                   name: capcal-secrets
                   key: AUTH_SECRET
+            - name: RPC_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: capcal-secrets
+                  key: RPC_SECRET
       imagePullSecrets:
         - name: regcred
