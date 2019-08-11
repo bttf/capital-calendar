@@ -1,6 +1,5 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
-import moment from 'moment';
-import db from '../../db';
+import fetchRecentTransactions from '../../lib/plaid/fetchRecentTransactions';
 
 const FetchRecentTransactionsPayloadType = new GraphQLObjectType({
   name: 'FetchRecentTransactionsPayload',
@@ -21,24 +20,11 @@ export default {
       type: new GraphQLNonNull(GraphQLString),
     },
   },
-  resolve: async (_, { itemId }, { plaidClient }) => {
-    const now = moment();
-    const today = now.format('YYYY-MM-DD');
-    const thirtyDaysAgo = now.subtract(30, 'days').format('YYYY-MM-DD');
+  resolve: async (_, { itemId }) => {
+    const { status, errors } = await fetchRecentTransactions(itemId, 30);
 
-    const { accessToken } = await db.PlaidItem.findOne({
-      where: { itemId },
-    });
+    if (errors && errors.length) return { errors };
 
-    if (!accessToken) {
-      return { status: 'No access token found' };
-    }
-
-    const response = await plaidClient.getTransactions(accessToken, thirtyDaysAgo, today);
-
-    // eslint-disable-next-line no-console
-    console.log('DEBUG: response', response);
-
-    return { status: 'OK' };
+    return { status };
   },
 };
