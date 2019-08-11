@@ -19,10 +19,18 @@ export const fetchRecentTransactions = async (itemId) => {
   let response;
   const rpcAuthToken = await genAuthToken();
 
-  response = await jaysonClient.request(
-    'fetchRecentTransactions',
-    [rpcAuthToken, itemId],
-  );
+  try {
+    response = await jaysonClient.request(
+      'fetchRecentTransactions',
+      [rpcAuthToken, itemId],
+    );
+  } catch(e) {
+    // eslint-disable-next-line no-console
+    return console.log('ERROR', e);
+  }
+
+  // eslint-disable-next-line no-console
+  console.log('response', response);
 
   return response;
 };

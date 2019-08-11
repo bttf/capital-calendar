@@ -2,6 +2,8 @@ import fetchRecentTransactions from '../lib/plaid/fetchRecentTransactions';
 
 export default {
   fetchRecentTransactions: async args => {
+    console.log('DEBUG rpc/fetchRecentTransactions', args);
+
     const [itemId] = args;
 
     if (!itemId) throw new Error('RPC fetchRecentTransactions: No itemId specified');

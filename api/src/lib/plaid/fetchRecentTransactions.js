@@ -3,6 +3,8 @@ import db from '../../db';
 import plaidClient from './client';
 
 export default async (itemId, daysAgo = 30) => {
+  console.log('DEBUG lib/fetchRecentTransactions');
+
   const now = moment();
   const today = now.format('YYYY-MM-DD');
   const someDaysAgo = now.subtract(daysAgo, 'days').format('YYYY-MM-DD');
