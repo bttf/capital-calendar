@@ -45,7 +45,7 @@ export default async (itemId, daysAgo = 30) => {
   }));
 
   try {
-    await db.PlaidInstitution.bulkCreate(bulkCreateAttrs);
+    await db.PlaidTransaction.bulkCreate(bulkCreateAttrs);
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log('ERROR creating transactions', e);
