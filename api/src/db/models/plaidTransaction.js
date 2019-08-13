@@ -45,7 +45,7 @@ export default (sequelize, DataTypes) => {
     },
     {
       schema: 'app',
-      tablename: 'plaid_transactions',
+      tableName: 'plaid_transactions',
     },
   );
 
