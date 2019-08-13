@@ -23,15 +23,15 @@ export default async (itemId, daysAgo = 30) => {
     return { errors: ['No access token found'] };
   }
 
-  let response;
+  let transactions;
 
   try {
-    response = await plaidClient.getAllTransactions(accessToken, someDaysAgo, today);
+    transactions = await plaidClient.getAllTransactions(accessToken, someDaysAgo, today);
   } catch (e) {
     return { errors: ['Error fetching transactions'] };
   }
 
-  const bulkCreateAttrs = (response.transactions || []).map(t => ({
+  const bulkCreateAttrs = (transactions || []).map(t => ({
     name: t.name,
     account_id: t.account_id,
     amount: t.amount,
@@ -52,7 +52,7 @@ export default async (itemId, daysAgo = 30) => {
   }
 
   // eslint-disable-next-line no-console
-  console.log('DEBUG: response', response);
+  console.log('DEBUG: transactions', transactions);
 
   return { status: 'OK', errors: [] };
 };
