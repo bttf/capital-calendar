@@ -32,6 +32,7 @@ export default async (itemId, daysAgo = 30) => {
   }
 
   const bulkCreateAttrs = (response.transactions || []).map(t => ({
+    name: t.name,
     account_id: t.account_id,
     amount: t.amount,
     category: t.category,
