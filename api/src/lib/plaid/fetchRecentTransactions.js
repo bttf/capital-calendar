@@ -17,6 +17,10 @@ export default async (itemId, daysAgo = 30) => {
     return { errors: ['Error fetching plaid item'] };
   }
 
+  if (!plaidItem) {
+    return { errors: ['Error fetching plaid item'] };
+  }
+
   const { accessToken } = plaidItem;
 
   if (!accessToken) {
@@ -33,15 +37,15 @@ export default async (itemId, daysAgo = 30) => {
 
   const bulkCreateAttrs = (transactions || []).map(t => ({
     name: t.name,
-    account_id: t.account_id,
+    accountId: t.account_id,
     amount: t.amount,
     category: t.category,
     categoryId: t.category_id,
     date: t.date,
     pending: t.pending,
-    pending_transaction_id: t.pending_transaction_id,
-    transaction_id: t.transaction_id,
-    transaction_type: t.transaction_type,
+    pendingTransactionId: t.pending_transaction_id,
+    transactionId: t.transaction_id,
+    transactionType: t.transaction_type,
   }));
 
   try {
@@ -49,10 +53,8 @@ export default async (itemId, daysAgo = 30) => {
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log('ERROR creating transactions', e);
+    throw e;
   }
-
-  // eslint-disable-next-line no-console
-  console.log('DEBUG: transactions', transactions);
 
   return { status: 'OK', errors: [] };
 };
