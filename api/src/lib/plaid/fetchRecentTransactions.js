@@ -3,8 +3,6 @@ import db from '../../db';
 import plaidClient from './client';
 
 export default async (itemId, daysAgo = 30) => {
-  console.log('DEBUG lib/fetchRecentTransactions');
-
   const now = moment();
   const today = now.format('YYYY-MM-DD');
   const someDaysAgo = now.subtract(daysAgo, 'days').format('YYYY-MM-DD');
@@ -28,9 +26,28 @@ export default async (itemId, daysAgo = 30) => {
   let response;
 
   try {
-    response = await plaidClient.getTransactions(accessToken, someDaysAgo, today);
+    response = await plaidClient.getAllTransactions(accessToken, someDaysAgo, today);
   } catch (e) {
     return { errors: ['Error fetching transactions'] };
+  }
+
+  const bulkCreateAttrs = (response.transactions || []).map(t => ({
+    account_id: t.account_id,
+    amount: t.amount,
+    category: t.category,
+    categoryId: t.category_id,
+    date: t.date,
+    pending: t.pending,
+    pending_transaction_id: t.pending_transaction_id,
+    transaction_id: t.transaction_id,
+    transaction_type: t.transaction_type,
+  }));
+
+  try {
+    await db.PlaidInstitution.bulkCreate(bulkCreateAttrs);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log('ERROR creating transactions', e);
   }
 
   // eslint-disable-next-line no-console
