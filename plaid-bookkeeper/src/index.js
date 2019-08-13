@@ -1,5 +1,5 @@
 import Queue from 'bull';
-import { fetchRecentTransactions } from './rpc';
+import { fetchRecentTransactions, removeTransactions } from './rpc';
 
 const { REDIS_HOST, REDIS_PASSWORD } = process.env;
 const itemQueue = new Queue('plaid-item', { redis: { host: REDIS_HOST, password: REDIS_PASSWORD } });
@@ -18,7 +18,7 @@ itemQueue.process(async (job, done) => {
     return;
   }
 
-  if (webhook_code === 'INITIAL_UPDATE') {
+  if (webhook_code === 'INITIAL_UPDATE' || webhook_code === 'DEFAULT_UPDATE') {
     try {
       await fetchRecentTransactions(itemId);
       // TODO: remove job from queue
@@ -26,6 +26,11 @@ itemQueue.process(async (job, done) => {
       // eslint-disable-next-line no-console
       console.log('Error', e);
     }
+  }
+
+  if (webhook_code === 'TRANSACTIONS_REMOVED') {
+    const transactionIds = data.removed_transactions;
+    await removeTransactions(transactionIds);
   }
 
   done();

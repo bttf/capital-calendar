@@ -35,7 +35,8 @@ export default async (itemId, daysAgo = 30) => {
     return { errors: ['Error fetching transactions'] };
   }
 
-  const bulkCreateAttrs = (transactions || []).map(t => ({
+  const transactionIds = transactions.map(t => t.transaction_id);
+  const bulkCreateAttrs = transactions.map(t => ({
     name: t.name,
     accountId: t.account_id,
     amount: t.amount,
@@ -49,7 +50,10 @@ export default async (itemId, daysAgo = 30) => {
   }));
 
   try {
-    await db.PlaidTransaction.bulkCreate(bulkCreateAttrs);
+    await db.sequelize.transaction(async transaction => {
+      await db.PlaidTransaction.destroy({ where: { transactionId: transactionIds }, transaction });
+      await db.PlaidTransaction.bulkCreate(bulkCreateAttrs, { transaction });
+    });
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log('ERROR creating transactions', e);

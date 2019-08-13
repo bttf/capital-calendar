@@ -34,3 +34,23 @@ export const fetchRecentTransactions = async (itemId) => {
 
   return response;
 };
+
+export const removeTransactions = async (transactionIds) => {
+  let response;
+  const rpcAuthToken = await genAuthToken();
+
+  try {
+    response = await jaysonClient.request(
+      'removeTransactions',
+      [rpcAuthToken, transactionIds],
+    );
+  } catch(e) {
+    // eslint-disable-next-line no-console
+    return console.log('ERROR', e);
+  }
+
+  // eslint-disable-next-line no-console
+  console.log('response', response);
+
+  return response;
+};
