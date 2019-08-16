@@ -42,10 +42,26 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         field: 'account_id',
       },
+      createdAt: {
+        type: DataTypes.DATE,
+        field: 'created_at',
+        allowNull: false,
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        field: 'updated_at',
+        allowNull: false,
+      },
+      deletedAt: {
+        type: DataTypes.DATE,
+        field: 'deleted_at',
+      },
     },
     {
       schema: 'app',
       tableName: 'plaid_transactions',
+      paranoid: true,
+      timestamps: true,
     },
   );
 

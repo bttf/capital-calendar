@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { partition } from 'lodash';
 import db from '../../db';
 import plaidClient from './client';
 
@@ -36,7 +37,7 @@ export default async (itemId, daysAgo = 30) => {
   }
 
   const transactionIds = transactions.map(t => t.transaction_id);
-  const bulkCreateAttrs = transactions.map(t => ({
+  const transactionAttrs = transactions.map(t => ({
     name: t.name,
     accountId: t.account_id,
     amount: t.amount,
@@ -49,10 +50,23 @@ export default async (itemId, daysAgo = 30) => {
     transactionType: t.transaction_type,
   }));
 
+  const existingTransactions = await db.PlaidTransaction.findAll({
+    where: { transactionId: transactionIds },
+  });
+  const existingTransactionIds = existingTransactions.map(t => t.transactionId);
+
+  const [transactionsToUpdate, transactionsToCreate] = partition(transactionAttrs, a =>
+    existingTransactionIds.includes(a.transactionId),
+  );
+
   try {
     await db.sequelize.transaction(async transaction => {
-      await db.PlaidTransaction.destroy({ where: { transactionId: transactionIds }, transaction });
-      await db.PlaidTransaction.bulkCreate(bulkCreateAttrs, { transaction });
+      await Promise.all(
+        transactionsToUpdate.map(t =>
+          db.PlaidTransaction.update(t, { where: { transactionId: t.transactionId }, transaction }),
+        ),
+      );
+      await db.PlaidTransaction.bulkCreate(transactionsToCreate, { transaction });
     });
   } catch (e) {
     // eslint-disable-next-line no-console
