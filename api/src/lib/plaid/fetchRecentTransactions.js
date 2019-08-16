@@ -1,6 +1,7 @@
 import moment from 'moment';
 import db from '../../db';
 import plaidClient from './client';
+import syncCalendarsAndTransactions from '../calendars/syncCalendarsAndTransactions';
 
 export default async (itemId, daysAgo = 30) => {
   const now = moment();
@@ -49,16 +50,20 @@ export default async (itemId, daysAgo = 30) => {
     transactionType: t.transaction_type,
   }));
 
+  let createdTransactions;
+
   try {
-    await db.sequelize.transaction(async transaction => {
+    createdTransactions = await db.sequelize.transaction(async transaction => {
       await db.PlaidTransaction.destroy({ where: { transactionId: transactionIds }, transaction });
-      await db.PlaidTransaction.bulkCreate(bulkCreateAttrs, { transaction });
+      return db.PlaidTransaction.bulkCreate(bulkCreateAttrs, { transaction, returning: true });
     });
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log('ERROR creating transactions', e);
     throw e;
   }
+
+  syncCalendarsAndTransactions(createdTransactions);
 
   return { status: 'OK', errors: [] };
 };
