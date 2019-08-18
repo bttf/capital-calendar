@@ -59,6 +59,9 @@ export default async (itemId, daysAgo = 30) => {
     existingTransactionIds.includes(a.transactionId),
   );
 
+  /**
+   * TODO Optimize this SQL operation
+   */
   try {
     await db.sequelize.transaction(async transaction => {
       await Promise.all(

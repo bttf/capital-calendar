@@ -23,7 +23,7 @@ export default {
   resolve: async (_, { itemId }) => {
     const { status, errors } = await fetchRecentTransactions(itemId, 30);
 
-    if (errors && errors.length) return { errors };
+    if (errors && errors.length) return { status: 'FAIL', errors };
 
     return { status };
   },

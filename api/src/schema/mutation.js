@@ -2,6 +2,7 @@ import { GraphQLObjectType } from 'graphql';
 import createPlaidItem from './mutation/createPlaidItem';
 import createCalendar from './mutation/createCalendar';
 import handleInitialUpdate from './mutation/handleInitialUpdate';
+import syncCalendars from './mutation/syncCalendars';
 import removeTransactions from './mutation/removeTransactions';
 
 export default new GraphQLObjectType({
@@ -10,6 +11,7 @@ export default new GraphQLObjectType({
     createPlaidItem,
     createCalendar,
     handleInitialUpdate,
+    syncCalendars,
     removeTransactions,
   },
 });

@@ -2,7 +2,7 @@ export default (sequelize, DataTypes) => {
   const CalendarEvent = sequelize.define(
     'CalendarEvent',
     {
-      event_id: { type: DataTypes.STRING, field: 'entity_id' },
+      eventId: { type: DataTypes.STRING, field: 'event_id' },
       date: {
         type: DataTypes.DATEONLY,
         allowNull: false,
@@ -12,14 +12,20 @@ export default (sequelize, DataTypes) => {
       },
       colorId: {
         type: DataTypes.TEXT,
+        field: 'color_id',
       },
       googleCalendarId: {
         type: DataTypes.TEXT,
+        field: 'google_calendar_id',
         allowNull: false,
       },
       calendarId: {
         type: DataTypes.INTEGER,
+        field: 'calendar_id',
         allowNull: false,
+      },
+      type: {
+        type: DataTypes.ENUM(['income', 'expenses']),
       },
     },
     {
