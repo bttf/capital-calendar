@@ -25,7 +25,7 @@ exports.up = function(db) {
       summary TEXT,
       color_id TEXT,
       google_calendar_id TEXT NOT NULL,
-      calendar_id INTEGER NOT NULL REFERENCES app.calendars ON DELETE CASCADE,
+      calendar_id INTEGER NOT NULL REFERENCES app.calendars ON DELETE CASCADE
     );
   `;
   return db.runSql(sql);
