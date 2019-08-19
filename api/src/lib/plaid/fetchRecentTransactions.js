@@ -3,24 +3,10 @@ import { partition } from 'lodash';
 import db from '../../db';
 import plaidClient from './client';
 
-export default async (itemId, daysAgo = 30) => {
+export default async (plaidItem, daysAgo = 30) => {
   const now = moment();
   const today = now.format('YYYY-MM-DD');
   const someDaysAgo = now.subtract(daysAgo, 'days').format('YYYY-MM-DD');
-
-  let plaidItem;
-
-  try {
-    plaidItem = await db.PlaidItem.findOne({
-      where: { itemId },
-    });
-  } catch (e) {
-    return { errors: ['Error fetching plaid item'] };
-  }
-
-  if (!plaidItem) {
-    return { errors: ['Error fetching plaid item'] };
-  }
 
   const { accessToken } = plaidItem;
 
@@ -59,6 +45,9 @@ export default async (itemId, daysAgo = 30) => {
     existingTransactionIds.includes(a.transactionId),
   );
 
+  /**
+   * TODO Optimize this SQL operation
+   */
   try {
     await db.sequelize.transaction(async transaction => {
       await Promise.all(

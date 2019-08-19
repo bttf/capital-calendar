@@ -1,4 +1,6 @@
+import db from '../db';
 import fetchRecentTransactions from '../lib/plaid/fetchRecentTransactions';
+import syncCalendars from '../lib/plaid/syncCalendars';
 import removeTransactions from '../lib/plaid/removeTransactions';
 
 export default {
@@ -7,7 +9,23 @@ export default {
 
     if (!itemId) throw new Error('RPC fetchRecentTransactions: No itemId specified');
 
-    const { status, errors } = await fetchRecentTransactions(itemId, 30);
+    let plaidItem;
+
+    try {
+      plaidItem = await db.PlaidItem.findOne({
+        where: { itemId },
+      });
+    } catch (e) {
+      return { errors: ['Error fetching plaid item'] };
+    }
+
+    if (!plaidItem) {
+      return { errors: ['Could not find plaid item'] };
+    }
+
+    const { status, errors } = await fetchRecentTransactions(plaidItem, 30);
+
+    await syncCalendars(itemId);
 
     return { status, errors };
   },

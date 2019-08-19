@@ -32,7 +32,7 @@ export default (sequelize, DataTypes) => {
   );
 
   PlaidItem.associate = models => {
-    const { PlaidInstitution, User } = models;
+    const { PlaidAccount, PlaidInstitution, User } = models;
 
     PlaidItem.PlaidInstitution = PlaidItem.belongsTo(PlaidInstitution, {
       foreignKey: 'plaid_institution_id',
@@ -40,6 +40,11 @@ export default (sequelize, DataTypes) => {
     });
 
     PlaidItem.User = PlaidItem.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+
+    PlaidItem.PlaidAccounts = PlaidItem.hasMany(PlaidAccount, {
+      foreignKey: 'plaid_item_id',
+      as: 'accounts',
+    });
   };
 
   return PlaidItem;

@@ -59,9 +59,15 @@ export default (sequelize, DataTypes) => {
       as: 'user',
     });
 
+    PlaidAccount.PlaidAccountCalendars = PlaidAccount.hasMany(PlaidAccountsCalendars, {
+      foreignKey: 'account_id',
+      as: 'plaidAccountsCalendars',
+    });
+
     PlaidAccount.Calendars = PlaidAccount.belongsToMany(Calendar, {
       through: PlaidAccountsCalendars,
-      foreignKey: 'calendar_id',
+      foreignKey: 'account_id',
+      otherKey: 'calendar_id',
       as: 'Calendars',
     });
   };

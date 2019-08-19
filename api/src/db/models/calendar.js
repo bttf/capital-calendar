@@ -12,7 +12,7 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
       },
       userId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         field: 'user_id',
       },
       googleCalendarId: {
@@ -43,10 +43,16 @@ export default (sequelize, DataTypes) => {
       as: 'user',
     });
 
+    Calendar.PlaidAccountCalendars = Calendar.hasMany(PlaidAccountsCalendars, {
+      foreignKey: 'calendar_id',
+      as: 'plaidAccountsCalendars',
+    });
+
     Calendar.PlaidAccounts = Calendar.belongsToMany(PlaidAccount, {
       as: 'plaidAccounts',
       through: PlaidAccountsCalendars,
-      foreignKey: 'account_id',
+      foreignKey: 'calendar_id',
+      otherKey: 'account_id',
     });
   };
 
