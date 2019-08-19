@@ -25,7 +25,7 @@ app.use(bodyParser.json());
 app.use('/auth', authRoutes);
 
 app.use('/public/graphql', async (req, res, next) => {
-  const context = { googleAuth: genGoogleOAuthClient() };
+  const context = { googleAuth: await genGoogleOAuthClient() };
   return graphqlHTTP({
     context,
     schema: publicSchema,

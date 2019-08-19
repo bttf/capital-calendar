@@ -22,7 +22,7 @@ export default {
       return { status: 'OK' };
     } catch (e) {
       // eslint-disable-next-line no-console
-      console.log('e', e);
+      console.log('e', e, e.message);
       return { status: 'FAIL' };
     }
   },

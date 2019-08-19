@@ -1,4 +1,5 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
+import { GraphQLObjectType, GraphQLNonNull, GraphQLList, GraphQLString } from 'graphql';
+import db from '../../db';
 import fetchRecentTransactions from '../../lib/plaid/fetchRecentTransactions';
 
 const FetchRecentTransactionsPayloadType = new GraphQLObjectType({
@@ -6,6 +7,9 @@ const FetchRecentTransactionsPayloadType = new GraphQLObjectType({
   fields: {
     status: {
       type: new GraphQLNonNull(GraphQLString),
+    },
+    errors: {
+      type: new GraphQLList(GraphQLString),
     },
   },
 });
@@ -21,10 +25,24 @@ export default {
     },
   },
   resolve: async (_, { itemId }) => {
-    const { status, errors } = await fetchRecentTransactions(itemId, 30);
+    let plaidItem;
+
+    try {
+      plaidItem = await db.PlaidItem.findOne({
+        where: { itemId },
+      });
+    } catch (e) {
+      return { status: 'FAIL', errors: ['Error fetching plaid item'] };
+    }
+
+    if (!plaidItem) {
+      return { status: 'FAIL', errors: ['Could not find plaid item'] };
+    }
+
+    const { status, errors } = await fetchRecentTransactions(plaidItem, 30);
 
     if (errors && errors.length) return { status: 'FAIL', errors };
 
-    return { status };
+    return { status, errors: [] };
   },
 };

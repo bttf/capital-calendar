@@ -1,9 +1,9 @@
 import moment from 'moment';
 import Promise from 'bluebird';
-// import { google } from 'googleapis';
+import { google } from 'googleapis';
 import { rangeRight, uniq } from 'lodash';
 
-// import { genGoogleOAuthClient } from '../../lib/auth';
+import { genGoogleOAuthClient } from '../../lib/auth';
 import upsertCalendarEvents from './upsertCalendarEvents';
 import db from '../../db';
 
@@ -17,8 +17,6 @@ const Op = db.Sequelize.Op;
  * TODO Optimize SQL queries
  */
 export default async itemId => {
-  // const googleAuth = genGoogleOAuthClient();
-  // const calendarAPI = google.calendar({ version: 'v3', auth: googleAuth });
   const thirtyDaysAgo = moment()
     .subtract(THIRTY_DAYS, 'days')
     .format('YYYY-MM-DD');
@@ -29,7 +27,7 @@ export default async itemId => {
    */
   const item = await db.PlaidItem.findOne({
     where: { itemId },
-    include: { association: db.PlaidItem.PlaidAccounts },
+    include: [{ association: db.PlaidItem.PlaidAccounts }, { association: db.PlaidItem.User }],
   });
   const accountIds = item.accounts.map(a => a.accountId);
   const userId = item.userId;
@@ -101,7 +99,7 @@ export default async itemId => {
           // TODO find or create empty event here
           return generatedEvents.push({
             date: dateOf,
-            summary: 0,
+            summary: '0',
             type: 'expenses',
             // TODO Replace this with actual color id for red
             colorId: 'red',
@@ -126,7 +124,7 @@ export default async itemId => {
           // TODO find or create empty event here
           return generatedEvents.push({
             date: dateOf,
-            summary: 0,
+            summary: '0',
             type: 'income',
             // TODO Replace this with actual color id for green
             colorId: 'green',
@@ -148,5 +146,58 @@ export default async itemId => {
     });
 
     await upsertCalendarEvents(generatedEvents, calendar.id);
+  });
+
+  const events = await db.CalendarEvent.findAll({
+    where: {
+      date: {
+        [Op.gte]: thirtyDaysAgo,
+      },
+      calendarId: calendars.map(c => c.id),
+    },
+  });
+
+  const googleAuth = await genGoogleOAuthClient(item.user);
+  const calendarAPI = google.calendar({ version: 'v3', auth: googleAuth });
+
+  const gCalEvents = await calendarAPI.events.list({
+    calendarId: events[0].googleCalendarId,
+    timeMin: new Date(thirtyDaysAgo).toJSON(),
+  });
+  const existingEvents = gCalEvents.data.items;
+  const existingEventIds = existingEvents.map(e => e.id);
+
+  await Promise.mapSeries(events, async e => {
+    const eventId = e.eventId.replace(/-/g, '');
+    try {
+      if (existingEventIds.includes(eventId)) {
+        await calendarAPI.events.update({
+          eventId,
+          calendarId: e.googleCalendarId,
+          resource: {
+            id: eventId,
+            // TODO Include colorId here when appropriate
+            start: { date: e.date },
+            end: { date: e.date },
+            summary: e.summary,
+          },
+        });
+      } else {
+        await calendarAPI.events.insert({
+          calendarId: e.googleCalendarId,
+          resource: {
+            id: eventId,
+            // TODO Include colorId here when appropriate
+            start: { date: e.date },
+            end: { date: e.date },
+            summary: e.summary,
+          },
+        });
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log('ERROR syncCalendars', e);
+      throw new Error(e);
+    }
   });
 };

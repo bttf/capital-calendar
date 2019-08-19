@@ -33,7 +33,7 @@ export default async (eventAttrs, calendarId) => {
     await Promise.mapSeries(eventsToUpdateAttrs, a =>
       db.CalendarEvent.update(a, {
         where: {
-          id: existingEvents.find(e => (e.date = a.date)).id,
+          eventId: existingEvents.find(e => e.date === a.date).eventId.replace(/-/g, ''),
         },
       }),
     );
