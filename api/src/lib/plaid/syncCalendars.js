@@ -75,18 +75,18 @@ export default async itemId => {
       const dateTransactions = calendarTransactions.filter(t => t.date === dateOf);
 
       // calculate income / expenses
-      const [sumExpenses, sumIncome] = dateTransactions.reduce(
+      const [sumExpenses, sumIncome, expenseNames, incomeNames] = dateTransactions.reduce(
         (acc, t) => {
-          const [expenses, income] = acc;
+          const [expenses, income, expNames, incNames] = acc;
           const amount = parseFloat(t.amount);
 
           if (amount > 0) {
-            return [expenses + amount, income];
+            return [expenses + amount, income, [...expNames, t.name], incNames];
           }
 
-          return [expenses, income - amount];
+          return [expenses, income - amount, expNames, [...incNames, t.name]];
         },
-        [0, 0],
+        [0, 0, [], []],
       );
 
       // gather account settings (to monitor expenses or income)
@@ -111,6 +111,7 @@ export default async itemId => {
         generatedEvents.push({
           date: dateOf,
           summary: sumExpenses.toFixed(2),
+          description: expenseNames.map(n => `- ${n}`).join('\n'),
           type: 'expenses',
           // TODO Replace this with actual color id for red
           colorId: 'red',
@@ -136,6 +137,7 @@ export default async itemId => {
         generatedEvents.push({
           date: dateOf,
           summary: sumIncome.toFixed(2),
+          description: incomeNames.map(n => `- ${n}`).join('\n'),
           type: 'income',
           // TODO Replace this with actual color id for green
           colorId: 'green',

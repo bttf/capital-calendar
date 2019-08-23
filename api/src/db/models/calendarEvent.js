@@ -10,6 +10,9 @@ export default (sequelize, DataTypes) => {
       summary: {
         type: DataTypes.TEXT,
       },
+      description: {
+        type: DataTypes.TEXT,
+      },
       colorId: {
         type: DataTypes.TEXT,
         field: 'color_id',
