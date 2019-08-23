@@ -182,6 +182,7 @@ export default async itemId => {
             start: { date: e.date },
             end: { date: e.date },
             summary: e.summary,
+            description: e.description,
           },
         });
       } else {
@@ -193,6 +194,7 @@ export default async itemId => {
             start: { date: e.date },
             end: { date: e.date },
             summary: e.summary,
+            description: e.description,
           },
         });
       }
