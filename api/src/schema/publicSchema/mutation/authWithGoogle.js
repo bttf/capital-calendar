@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
+import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
 import { google } from 'googleapis';
 import db from '../../../db';
 import { generateToken } from '../../../lib/auth';
@@ -9,9 +9,17 @@ const AuthWithGooglePayloadType = new GraphQLObjectType({
     token: {
       type: GraphQLString,
     },
+    errors: { type: new GraphQLList(GraphQLString) },
   },
 });
 
+/**
+ * This mutation is called when a user has auth'd with google, and is sent
+ * back to our site with a generated code.
+ *
+ * We use that code to generate tokens via googleapis client, store tokens, and
+ * send back the user a JWT that they can use for bearer auth.
+ */
 export default {
   name: 'authWithGoogle',
   type: AuthWithGooglePayloadType,
@@ -26,7 +34,7 @@ export default {
     } catch (e) {
       // eslint-disable-next-line
       console.error(e);
-      return { errors: [{ message: 'An error occured' }], token: null };
+      return { errors: ['Unable to retrieve tokens using code'], token: null };
     }
 
     googleAuth.setCredentials(tokens);
@@ -51,7 +59,7 @@ export default {
     } catch (e) {
       // eslint-disable-next-line
       console.error(e);
-      return { errors: [{ message: 'An error occured' }], token: null };
+      return { errors: ['An error occured', e && e.message], token: null };
     }
 
     try {
@@ -63,7 +71,7 @@ export default {
     } catch (e) {
       // eslint-disable-next-line
       console.error(e);
-      return { errors: [{ message: 'An error occured' }], token: null };
+      return { errors: ['Unable to update tokens for user'], token: null };
     }
 
     return {

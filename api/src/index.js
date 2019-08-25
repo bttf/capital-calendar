@@ -1,28 +1,28 @@
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import bodyParser from 'body-parser';
-import jayson from 'jayson/promise';
-import rpcMethods from './rpc';
-import passport from './middleware/passport';
-import schema from './schema';
-import publicSchema from './schema/publicSchema';
-import authRoutes from './routes/auth';
+import rpc from 'jayson/promise';
 import cors from 'cors';
+
 import { genLoaders } from './lib/loaders';
 import { genGoogleOAuthClient } from './lib/auth';
+import plaidClient from './lib/plaid/client';
+
+import passport from './middleware/passport';
 import bearerAuth from './middleware/bearerAuth';
 import rpcAuth from './middleware/rpcAuth';
-import plaidClient from './lib/plaid/client';
+
+import schema from './schema';
+import publicSchema from './schema/publicSchema';
+import rpcMethods from './rpc';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
-const jaysonServer = jayson.server(rpcMethods);
+const rpcServer = rpc.server(rpcMethods);
 
 app.use(cors());
 app.use(passport.initialize());
 app.use(bodyParser.json());
-
-app.use('/auth', authRoutes);
 
 app.use('/public/graphql', async (req, res, next) => {
   const context = { googleAuth: await genGoogleOAuthClient() };
@@ -46,7 +46,7 @@ app.use('/graphql', bearerAuth, async (req, res, next) => {
   })(req, res, next);
 });
 
-app.use(rpcAuth, jaysonServer.middleware());
+app.use(rpcAuth, rpcServer.middleware());
 
 app.listen(PORT, () => {
   //eslint-disable-next-line no-console

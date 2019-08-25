@@ -21,7 +21,7 @@ export default async user => {
   const googleAuth = await user.getGoogleAuth();
 
   if (!googleAuth) {
-    throw new Error('User has no google authentication');
+    throw new Error('User has no google authentication; Have them reauthenticate with google');
   }
 
   const { accessToken, refreshToken } = googleAuth;
@@ -34,7 +34,8 @@ export default async user => {
   /**
    * If we don't have a refresh token, we can't rely on google client to
    * refresh itself. So we manually validate the token here and kick off
-   * the user if the token is invalid for them to reauth manually.
+   * the user if the token is invalid for them so that they can reauth
+   * manually.
    *
    * TODO: Figure out how to deal with this since having no refresh token means
    * we wont be able to update their calendar after access token expires.

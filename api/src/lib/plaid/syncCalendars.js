@@ -31,7 +31,6 @@ export default async itemId => {
   });
   const accountIds = item.accounts.map(a => a.accountId);
   const userId = item.userId;
-
   const transactions = await db.PlaidTransaction.findAll({
     where: {
       accountId: accountIds,

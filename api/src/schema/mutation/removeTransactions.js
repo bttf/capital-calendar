@@ -7,6 +7,9 @@ const RemoveTransactionsPayloadType = new GraphQLObjectType({
     status: {
       type: new GraphQLNonNull(GraphQLString),
     },
+    errors: {
+      type: new GraphQLList(GraphQLString),
+    },
   },
 });
 
@@ -25,6 +28,6 @@ export default {
 
     if (errors && errors.length) return { errors };
 
-    return { status };
+    return { status, errors: [] };
   },
 };
