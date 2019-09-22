@@ -8,7 +8,7 @@ export default async transactionIds => {
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log('ERROR deleting transactions', e);
-    throw e;
+    return { status: 'FAIL', errors: [e && e.message] };
   }
 
   return { status: 'OK', errors: [] };

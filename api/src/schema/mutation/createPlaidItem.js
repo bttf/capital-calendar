@@ -8,6 +8,7 @@ const CreatePlaidItemPayloadType = new GraphQLObjectType({
     accounts: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(AccountType))),
     },
+    errors: { type: new GraphQLList(GraphQLString) },
   },
 });
 

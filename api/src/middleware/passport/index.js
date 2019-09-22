@@ -3,6 +3,7 @@ import bearerStrategy from './bearerStrategy';
 
 passport.use(bearerStrategy);
 
+// TODO Assert if we need these two methods defined
 passport.serializeUser((user, cb) => {
   // eslint-disable-next-line
   console.log('DEBUG serializeUser', user);

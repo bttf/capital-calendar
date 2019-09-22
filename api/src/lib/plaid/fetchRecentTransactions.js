@@ -3,6 +3,11 @@ import { partition } from 'lodash';
 import db from '../../db';
 import plaidClient from './client';
 
+const hasDiffWithExistingTransaction = (/*transaction, existing*/) => {
+  // TODO Let's diff here
+  return true;
+};
+
 export default async (plaidItem, daysAgo = 30) => {
   const now = moment();
   const today = now.format('YYYY-MM-DD');
@@ -45,13 +50,15 @@ export default async (plaidItem, daysAgo = 30) => {
     existingTransactionIds.includes(a.transactionId),
   );
 
-  /**
-   * TODO Optimize this SQL operation
-   */
+  const transactionsToUpdateWithChanges = transactionsToUpdate.filter(t => {
+    const existing = existingTransactions.find(et => et.transactionId === t.transactionId);
+    return hasDiffWithExistingTransaction(t, existing);
+  });
+
   try {
     await db.sequelize.transaction(async transaction => {
       await Promise.all(
-        transactionsToUpdate.map(t =>
+        transactionsToUpdateWithChanges.map(t =>
           db.PlaidTransaction.update(t, { where: { transactionId: t.transactionId }, transaction }),
         ),
       );

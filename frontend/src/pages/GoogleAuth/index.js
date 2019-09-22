@@ -10,6 +10,7 @@ const AUTH_WITH_CAPCAL = gql`
   mutation AuthWithGoogle($code: String!) {
     authWithGoogle(code: $code) {
       token
+      errors
     }
   }
 `;
@@ -25,8 +26,13 @@ export default (props: any) => {
         if (!called) {
           authWithGoogle({ variables: { code } });
         } else if (called && !loading && data) {
-          onLogin({ token: data.authWithGoogle.token });
-          window.location.href = '/';
+          if (data.authWithGoogle.errors) {
+            alert('An error occurred');
+            console.error(data.authWithGoogle.errors);
+          } else {
+            onLogin({ token: data.authWithGoogle.token });
+            window.location.href = '/';
+          }
         }
         return (
           <Text color="#808080" font="'Arvo', serif" size={48}>

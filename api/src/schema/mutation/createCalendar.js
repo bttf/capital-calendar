@@ -39,20 +39,6 @@ export default {
         name,
       });
 
-      // Example calendar payload
-      // {
-      //   "kind": "calendar#calendar",
-      //     "etag": "\"MdzT9DDZ3pYVHggf2BlysiBDqcw/leOHudOXk5EK79BVPjlwfkFrv6Y\"",
-      //     "id": "l93qetaoek3chpnl899buki6ls@group.calendar.google.com",
-      //     "summary": "Capital calendar #2",
-      //     "timeZone": "UTC",
-      //     "conferenceProperties": {
-      //       "allowedConferenceSolutionTypes": [
-      //         "eventHangout"
-      //       ]
-      //     }
-      // }
-
       await db.sequelize.transaction(async transaction => {
         calendar = await db.Calendar.create(
           {
@@ -66,23 +52,20 @@ export default {
 
         // I don't know why these need to be snake-case to work. But
         // they do.
-        await db.PlaidAccountsCalendars.bulkCreate(
-          expenseAccountIds.map(accountId => ({
+        const accountsCalendarsBulkAttrs = [
+          ...expenseAccountIds.map(accountId => ({
             account_id: accountId,
             calendar_id: calendar.id,
             type: 'expenses',
           })),
-          { transaction },
-        );
-
-        await db.PlaidAccountsCalendars.bulkCreate(
-          incomeAccountIds.map(accountId => ({
+          ...incomeAccountIds.map(accountId => ({
             account_id: accountId,
             calendar_id: calendar.id,
             type: 'income',
           })),
-          { transaction },
-        );
+        ];
+
+        await db.PlaidAccountsCalendars.bulkCreate(accountsCalendarsBulkAttrs, { transaction });
       });
     } catch (e) {
       // eslint-disable-next-line

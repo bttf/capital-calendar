@@ -14,7 +14,6 @@ const FetchRecentTransactionsPayloadType = new GraphQLObjectType({
   },
 });
 
-// NOTE: This is not being used yet.
 export default {
   name: 'fetchRecentTransactions',
   type: FetchRecentTransactionsPayloadType,
