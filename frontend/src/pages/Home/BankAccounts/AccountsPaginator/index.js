@@ -135,6 +135,8 @@ const PAGINATED_ACCOUNTS_QUERY = gql`
           accountId
           name
           mask
+          loginRequired
+          itemPublicToken
           institution {
             name
             logo

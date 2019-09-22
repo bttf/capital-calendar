@@ -29,6 +29,7 @@ export default {
 
     return { status, errors };
   },
+
   removeTransactions: async args => {
     const [transactionIds] = args;
 
@@ -36,6 +37,35 @@ export default {
       throw new Error('RPC removeTransactions: No transaction ids specified');
 
     const { status, errors } = await removeTransactions(transactionIds);
+
+    return { status, errors };
+  },
+
+  markItemLoginRequired: async args => {
+    const [itemId] = args;
+
+    if (!itemId) throw new Error('RPC markItemLoginRequired: itemId cannot be null or undefined');
+
+    let status = 'OK';
+    let errors = [];
+
+    try {
+      await db.PlaidItem.update(
+        {
+          loginRequired: true,
+        },
+        {
+          where: {
+            itemId,
+            loginRequired: false,
+          },
+        },
+      );
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('API RPC markItemLoginRequired error - ', e.message, e.stack);
+      errors = [e.message];
+    }
 
     return { status, errors };
   },

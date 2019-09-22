@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import PlaidLink from 'react-plaid-link';
 import ItemCard from '../ItemCard';
+import { PLAID_ENV, PLAID_ITEM_WEBHOOK, PLAID_PUBLIC_KEY } from '../../constants';
 
 const Img = styled('img')`
   max-height: 24px;
@@ -30,6 +32,28 @@ const AccountInfo = styled('div')`
 const AccountMask = styled('sub')`
   color: #808080;
   font-style: italic;
+`;
+
+const LoginRequiredOverlay = styled('div')`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: -4px;
+  border-radius: 8px;
+
+  display: flex-inline;
+  justify-content: center;
+  align-items: center;
+
+  padding: 6px 12px;
+
+  background-color: rgba(180, 0, 0, 0.9);
+  color: white;
+
+  & > div {
+    display: inline;
+  }
 `;
 
 export default ({
@@ -68,6 +92,24 @@ export default ({
           </AccountMask>
         </AccountInfo>
       </AccountCardDetails>
+
+      {account.loginRequired && (
+        <LoginRequiredOverlay>
+          We lost access to the bank. They need you to log in again 🙄
+          <PlaidLink
+            clientName="Capital Calendar"
+            product={['transactions']}
+            env={PLAID_ENV}
+            publicKey={PLAID_PUBLIC_KEY}
+            webhook={PLAID_ITEM_WEBHOOK}
+            token={account.itemPublicToken}
+            onSuccess={() => {}}
+            onExit={() => {}}
+          >
+            Log in here
+          </PlaidLink>
+        </LoginRequiredOverlay>
+      )}
     </ItemCard>
   );
 };

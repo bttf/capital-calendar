@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
+import { GraphQLBoolean, GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
 import InstitutionType from '../institution';
 
 export default new GraphQLObjectType({
@@ -11,10 +11,15 @@ export default new GraphQLObjectType({
     subtype: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
+    itemPublicToken: { type: GraphQLString },
     institution: {
       type: InstitutionType,
       resolve: (account, _args, { loaders }) =>
         loaders.findOrCreateInstitutionById.load(account.plaidInstitutionId),
+    },
+    loginRequired: {
+      type: new GraphQLNonNull(GraphQLBoolean),
+      resolve: account => account.plaidItem.loginRequired,
     },
   },
 });

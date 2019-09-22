@@ -24,6 +24,11 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         field: 'user_id',
       },
+      loginRequired: {
+        type: DataTypes.BOOLEAN,
+        field: 'login_required',
+        allowNull: false,
+      },
     },
     {
       schema: 'app',

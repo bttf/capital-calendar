@@ -14,6 +14,8 @@ export default (req, res, next) => {
       include: { association: db.User.GoogleAuth },
     });
 
+    if (!user) return unauthorizedResponse();
+
     const googleOAuthClient = await genGoogleOAuthClient(user);
 
     req.user = user.toJSON();

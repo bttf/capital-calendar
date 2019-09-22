@@ -54,3 +54,23 @@ export const removeTransactions = async (transactionIds) => {
 
   return response;
 };
+
+export const markItemLoginRequired = async (itemId) => {
+  let response;
+  const rpcAuthToken = await genAuthToken();
+
+  try {
+    response = await jaysonClient.request(
+      'markItemLoginRequired',
+      [rpcAuthToken, itemId],
+    );
+  } catch(e) {
+    // eslint-disable-next-line no-console
+    return console.log('ERROR', e);
+  }
+
+  // eslint-disable-next-line no-console
+  console.log('response', response);
+
+  return response;
+};
