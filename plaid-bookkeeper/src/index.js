@@ -16,8 +16,8 @@ itemQueue.process(async (job, done) => {
 
   if (!data) return;
 
-  const { error = {}, item_id: itemId, webhook_type, webhook_code } = data;
-  const { error_code } = error;
+  const { error, item_id: itemId, webhook_type, webhook_code } = data;
+  const { error_code } = error || {};
 
   if (webhook_type !== 'TRANSACTIONS') {
     return;

@@ -27,6 +27,19 @@ export default {
 
     await syncCalendars(itemId);
 
+    // TODO abstract this out
+    await db.PlaidItem.update(
+      {
+        loginRequired: false,
+      },
+      {
+        where: {
+          itemId,
+          loginRequired: true,
+        },
+      },
+    );
+
     return { status, errors };
   },
 
@@ -64,6 +77,7 @@ export default {
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error('API RPC markItemLoginRequired error - ', e.message, e.stack);
+      status = 'FAIL';
       errors = [e.message];
     }
 
