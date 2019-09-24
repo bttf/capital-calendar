@@ -19,15 +19,6 @@ itemQueue.process(async (job, done) => {
   const { error, item_id: itemId, webhook_type, webhook_code } = data;
   const { error_code } = error || {};
 
-  /* eslint-disable no-console */
-  console.log('DEBUG data.error', data.error, typeof data.error);
-  console.log('DEBUG error', error, typeof error);
-  console.log('DEBUG error_code', error_code, typeof error_code);
-
-  if (webhook_type !== 'TRANSACTIONS') {
-    return;
-  }
-
   if (webhook_code === 'INITIAL_UPDATE' || webhook_code === 'DEFAULT_UPDATE') {
     await fetchRecentTransactions(itemId);
   }

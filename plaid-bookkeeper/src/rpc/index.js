@@ -56,9 +56,6 @@ export const removeTransactions = async (transactionIds) => {
 };
 
 export const markItemLoginRequired = async (itemId) => {
-  // eslint-disable-next-line no-console
-  console.log('DEBUG markItemLoginRequired');
-
   let response;
   const rpcAuthToken = await genAuthToken();
 
