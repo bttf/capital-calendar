@@ -19,12 +19,18 @@ export default async (plaidItem, daysAgo = 30) => {
   let transactions;
 
   try {
-    accounts = await plaidClient.getAccounts(accessToken);
+    ({ accounts } = await plaidClient.getAccounts(accessToken));
     transactions = await plaidClient.getAllTransactions(accessToken, someDaysAgo, today);
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error((e && e.message) || e);
     return { errors: ['Error fetching transactions'] };
+  }
+
+  if (!accounts) {
+    // eslint-disable-next-line no-console
+    console.log('No accounts returned by plaid API');
+    return;
   }
 
   if (!transactions || !transactions.length) {
