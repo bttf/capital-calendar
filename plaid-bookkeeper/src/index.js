@@ -10,13 +10,13 @@ const itemQueue = new Queue('plaid-item', { redis: { host: REDIS_HOST, password:
  */
 itemQueue.process(async (job, done) => {
   // eslint-disable-next-line no-console
-  console.log('\n===\nReceived payload', job.data, '\n');
+  console.log(`\n===\n${new Date().toLocaleString()} Received payload`, job.data, '\n');
 
   const { data } = job;
 
   if (!data) return;
 
-  const { error, item_id: itemId, webhook_type, webhook_code } = data;
+  const { error, item_id: itemId, webhook_code } = data;
   const { error_code } = error || {};
 
   if (webhook_code === 'INITIAL_UPDATE' || webhook_code === 'DEFAULT_UPDATE') {
@@ -29,7 +29,6 @@ itemQueue.process(async (job, done) => {
   }
 
   if (error_code === 'ITEM_LOGIN_REQUIRED') {
-    console.log('DEBUG calling markItemLoginRequired');
     await markItemLoginRequired(itemId);
   }
 

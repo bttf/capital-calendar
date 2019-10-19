@@ -127,7 +127,7 @@ export default class AccountsPaginator extends React.Component {
   }
 }
 
-const PAGINATED_ACCOUNTS_QUERY = gql`
+export const PAGINATED_ACCOUNTS_QUERY = gql`
   query PaginatedAccounts($offset: Int, $limit: Int) {
     viewer {
       user {
@@ -137,6 +137,7 @@ const PAGINATED_ACCOUNTS_QUERY = gql`
           mask
           loginRequired
           itemPublicToken
+          plaidItemId
           institution {
             name
             logo

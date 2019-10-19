@@ -12,6 +12,7 @@ export default new GraphQLObjectType({
     createdAt: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
     itemPublicToken: { type: GraphQLString },
+    plaidItemId: { type: GraphQLString },
     institution: {
       type: InstitutionType,
       resolve: (account, _args, { loaders }) =>

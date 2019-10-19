@@ -1,8 +1,11 @@
 import React from 'react';
+import { Mutation } from 'react-apollo';
+import gql from 'graphql-tag';
 import styled from 'styled-components';
 import PlaidLink from 'react-plaid-link';
 import ItemCard from '../ItemCard';
 import { PLAID_ENV, PLAID_ITEM_WEBHOOK, PLAID_PUBLIC_KEY } from '../../constants';
+import { PAGINATED_ACCOUNTS_QUERY } from '../../pages/Home/BankAccounts/AccountsPaginator';
 
 const Img = styled('img')`
   max-height: 24px;
@@ -95,21 +98,47 @@ export default ({
 
       {account.loginRequired && (
         <LoginRequiredOverlay>
-          We lost access to the bank. They need you to log in again 🙄
-          <PlaidLink
-            clientName="Capital Calendar"
-            product={['transactions']}
-            env={PLAID_ENV}
-            publicKey={PLAID_PUBLIC_KEY}
-            webhook={PLAID_ITEM_WEBHOOK}
-            token={account.itemPublicToken}
-            onSuccess={() => {}}
-            onExit={() => {}}
+          <Mutation
+            mutation={MARK_ITEM_AS_LOGGED_IN}
+            refetchQueries={() => [
+              { query: PAGINATED_ACCOUNTS_QUERY, variables: { offset: 0, limit: 3 } },
+            ]}
           >
-            Log in here
-          </PlaidLink>
+            {markItemAsLoggedIn => (
+              <React.Fragment>
+                We lost access to the bank. They need you to log in again{' '}
+                <span role="img" aria-label="rolling eyes emoji">
+                  🙄
+                </span>
+                <PlaidLink
+                  clientName="Capital Calendar"
+                  product={['transactions']}
+                  env={PLAID_ENV}
+                  publicKey={PLAID_PUBLIC_KEY}
+                  webhook={PLAID_ITEM_WEBHOOK}
+                  token={account.itemPublicToken}
+                  onSuccess={() => {
+                    markItemAsLoggedIn({
+                      variables: { itemId: account.plaidItemId },
+                    });
+                  }}
+                  onExit={noop}
+                >
+                  Log in here
+                </PlaidLink>
+              </React.Fragment>
+            )}
+          </Mutation>
         </LoginRequiredOverlay>
       )}
     </ItemCard>
   );
 };
+
+const MARK_ITEM_AS_LOGGED_IN = gql`
+  mutation MarkItemAsLoggedIn($itemId: String!) {
+    markItemAsLoggedIn(itemId: $itemId) {
+      success
+    }
+  }
+`;
