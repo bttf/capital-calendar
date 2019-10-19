@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import ConnectWithPlaidButton from '../../../components/ConnectWithPlaidButton';
 import AccountsPaginator from './AccountsPaginator';
 import AccountsList from './AccountsList';
+import AddPlaidAccountButton from './AddPlaidAccountButton';
 
 export const ItemContainer = styled('div')`
   position: relative;
@@ -25,6 +26,12 @@ export const Title = styled('div')`
   margin-bottom: 32px;
 `;
 
+const AddPlaidAccountButtonContainer = styled('div')`
+  position: absolute;
+  top: 8px;
+  left: -64px;
+`;
+
 export default props => {
   return (
     <Query query={USER_QUERY}>
@@ -39,7 +46,15 @@ export default props => {
 
             {hasAccounts && (
               <AccountsPaginator>
-                {accounts => <AccountsList accounts={accounts} />}
+                {accounts => (
+                  <React.Fragment>
+                    <AddPlaidAccountButtonContainer>
+                      <AddPlaidAccountButton />
+                    </AddPlaidAccountButtonContainer>
+
+                    <AccountsList accounts={accounts} />
+                  </React.Fragment>
+                )}
               </AccountsPaginator>
             )}
 

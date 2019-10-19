@@ -5,6 +5,10 @@ import styled from 'styled-components';
 
 import { TextContainer } from '../../../../components/Text';
 
+const Container = styled('div')`
+  position: relative;
+`;
+
 const Paginator = styled('div')`
   display: flex;
   justify-content: space-between;
@@ -102,13 +106,13 @@ export default class AccountsPaginator extends React.Component {
         }}
       >
         {({ loading, error, data, fetchMore }) => {
-          if (loading) return null;
+          if (loading) return 'Loading...';
           if (error) return error;
 
           const accounts = data.viewer.user.accounts;
 
           return (
-            <div>
+            <Container>
               {children(accounts)}
 
               <Paginator>
@@ -119,7 +123,7 @@ export default class AccountsPaginator extends React.Component {
                   Next
                 </Nav>
               </Paginator>
-            </div>
+            </Container>
           );
         }}
       </Query>

@@ -37,7 +37,7 @@ const ConnectWithPlaidButton = styled(PlaidLink)`
   }
 `;
 
-const CREATE_PLAID_ITEM = gql`
+export const CREATE_PLAID_ITEM = gql`
   mutation CreatePlaidItem($publicToken: String!) {
     createPlaidItem(publicToken: $publicToken) {
       accounts {
@@ -59,7 +59,7 @@ export default () => {
 
   return (
     <Mutation mutation={CREATE_PLAID_ITEM} refetchQueries={() => [{ query: USER_QUERY }]}>
-      {(createPlaidItem, { called, data, loading }) => {
+      {(createPlaidItem, { called, data }) => {
         return isLoading ? (
           <span>Loading...</span>
         ) : (
