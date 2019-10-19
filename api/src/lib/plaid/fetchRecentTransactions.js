@@ -19,8 +19,13 @@ export default async (plaidItem, daysAgo = 30) => {
   try {
     transactions = await plaidClient.getAllTransactions(accessToken, someDaysAgo, today);
   } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error((e && e.message) || e);
     return { errors: ['Error fetching transactions'] };
   }
+
+  // eslint-disable-next-line no-console
+  console.log(`Syncing ${transactions.length} transactions for plaidItem: ${plaidItem.itemId}`);
 
   const transactionIds = transactions.map(t => t.transaction_id);
   const transactionAttrs = transactions.map(t => ({

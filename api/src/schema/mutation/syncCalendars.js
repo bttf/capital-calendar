@@ -27,6 +27,7 @@ export default {
         const plaidItem = await db.PlaidItem.findOne({
           where: { itemId, user_id: viewer.user.id },
         });
+
         await fetchRecentTransactions(plaidItem);
       }
 
