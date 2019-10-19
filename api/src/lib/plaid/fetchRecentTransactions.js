@@ -24,22 +24,35 @@ export default async (plaidItem, daysAgo = 30) => {
     return { errors: ['Error fetching transactions'] };
   }
 
+  if (!transactions || !transactions.length) {
+    // eslint-disable-next-line no-console
+    console.log('No transactions returned by plaid API');
+    return;
+  }
+
   // eslint-disable-next-line no-console
   console.log(`Syncing ${transactions.length} transactions for plaidItem: ${plaidItem.itemId}`);
 
+  const plaidAccounts = await db.PlaidAccount.findAll({
+    where: { plaid_item_id: plaidItem.itemId },
+  });
+  const plaidAccountIds = plaidAccounts.map(a => a.accountId);
+
   const transactionIds = transactions.map(t => t.transaction_id);
-  const transactionAttrs = transactions.map(t => ({
-    name: t.name,
-    accountId: t.account_id,
-    amount: t.amount,
-    category: t.category,
-    categoryId: t.category_id,
-    date: t.date,
-    pending: t.pending,
-    pendingTransactionId: t.pending_transaction_id,
-    transactionId: t.transaction_id,
-    transactionType: t.transaction_type,
-  }));
+  const transactionAttrs = transactions
+    .map(t => ({
+      name: t.name,
+      accountId: t.account_id,
+      amount: t.amount,
+      category: t.category,
+      categoryId: t.category_id,
+      date: t.date,
+      pending: t.pending,
+      pendingTransactionId: t.pending_transaction_id,
+      transactionId: t.transaction_id,
+      transactionType: t.transaction_type,
+    }))
+    .filter(t => plaidAccountIds.includes(t.accountId));
 
   const existingTransactions = await db.PlaidTransaction.findAll({
     where: { transactionId: transactionIds },
