@@ -1,4 +1,6 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
+import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLBoolean } from 'graphql';
+import db from '../../db';
+import fetchRecentTransactions from '../../lib/plaid/fetchRecentTransactions';
 import syncCalendars from '../../lib/plaid/syncCalendars';
 
 const SyncCalendarsPayloadType = new GraphQLObjectType({
@@ -15,9 +17,19 @@ export default {
     itemId: {
       type: new GraphQLNonNull(GraphQLString),
     },
+    fetchTransactions: {
+      type: GraphQLBoolean,
+    },
   },
-  resolve: async (_, { itemId }) => {
+  resolve: async (_, { fetchTransactions, itemId }, { viewer }) => {
     try {
+      if (fetchTransactions) {
+        const plaidItem = await db.PlaidItem.findOne({
+          where: { itemId, user_id: viewer.user.id },
+        });
+        await fetchRecentTransactions(plaidItem);
+      }
+
       await syncCalendars(itemId);
       return { status: 'OK' };
     } catch (e) {
