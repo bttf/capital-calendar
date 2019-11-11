@@ -23,22 +23,39 @@ export default {
       return { errors: ['Could not find plaid item'] };
     }
 
-    const { status, errors } = await fetchRecentTransactions(plaidItem, 30);
+    let status;
+    let errors;
+    try {
+      ({ status, errors } = await fetchRecentTransactions(plaidItem, 30));
+    } catch (e) {
+      const err = (e && e.message) || e;
+      return { errors: ['Could not fetch recent transactions', err] };
+    }
 
-    await syncCalendars(itemId);
+    try {
+      await syncCalendars(itemId);
+    } catch (e) {
+      const err = (e && e.message) || e;
+      return { errors: ['Could not sync calendars', err] };
+    }
 
     // TODO abstract this out
-    await db.PlaidItem.update(
-      {
-        loginRequired: false,
-      },
-      {
-        where: {
-          itemId,
-          loginRequired: true,
+    try {
+      await db.PlaidItem.update(
+        {
+          loginRequired: false,
         },
-      },
-    );
+        {
+          where: {
+            itemId,
+            loginRequired: true,
+          },
+        },
+      );
+    } catch (e) {
+      const err = (e && e.message) || e;
+      return { errors: ['Error updating plaid item', err] };
+    }
 
     return { status, errors };
   },
