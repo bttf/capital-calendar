@@ -36,6 +36,10 @@ export default {
       await syncCalendars(itemId);
     } catch (e) {
       const err = (e && e.message) || e;
+
+      // eslint-disable-next-line no-console
+      console.error(e.stack);
+
       return { errors: ['Could not sync calendars', err] };
     }
 
