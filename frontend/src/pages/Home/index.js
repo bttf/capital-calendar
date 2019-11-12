@@ -8,6 +8,8 @@ import BankAccounts from './BankAccounts';
 import Calendars from './Calendars';
 
 export default () => {
+  const [selectedCalendar, setSelectedCalendar] = useState(null);
+  const [isEditingCalendar, setIsEditingCalendar] = useState(false);
   const [isCreatingCalendar, setIsCreatingCalendar] = useState(false);
   const [incomeAccountIdsSelected, setIncomeAccountIds] = useState([]);
   const [expenseAccountIdsSelected, setExpenseAccountIds] = useState([]);
@@ -37,8 +39,12 @@ export default () => {
    * Using context API
    */
   const HomeContextValue = {
+    selectedCalendar,
+    setSelectedCalendar,
     isCreatingCalendar,
     setIsCreatingCalendar,
+    isEditingCalendar,
+    setIsEditingCalendar,
     selectingAccountType,
     setSelectingAccountType,
     incomeAccountIdsSelected,

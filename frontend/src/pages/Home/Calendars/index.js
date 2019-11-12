@@ -6,6 +6,7 @@ import HomeContext from '../HomeContext';
 import { ItemContainer, Title } from '../BankAccounts';
 import AddYourFirstCalendarButton from './AddYourFirstCalendarButton';
 import CreateCalendarForm from './CreateCalendarForm';
+import EditCalendarForm from './EditCalendarForm';
 import CalendarBlockingOverlay from './CalendarBlockingOverlay';
 
 export const CALENDARS_QUERY = gql`
@@ -16,9 +17,16 @@ export const CALENDARS_QUERY = gql`
           name
         }
         calendars {
+          entityId
           name
           backgroundColor
           googleCalendarInSync
+          incomeAccounts {
+            accountId
+          }
+          expenseAccounts {
+            accountId
+          }
         }
       }
     }
@@ -44,8 +52,12 @@ export default props => {
         return (
           <HomeContext.Consumer>
             {({
+              selectedCalendar,
+              setSelectedCalendar,
               isCreatingCalendar,
               setIsCreatingCalendar,
+              isEditingCalendar,
+              setIsEditingCalendar,
               setSelectingAccountType,
               setIncomeAccountIds,
               setExpenseAccountIds,
@@ -58,7 +70,33 @@ export default props => {
                     <AddYourFirstCalendarButton onClick={() => setIsCreatingCalendar(true)} />
                   )}
 
-                {!isCreatingCalendar && calendars.map(c => <CalendarCard calendar={c} />)}
+                {!isCreatingCalendar &&
+                  !isEditingCalendar &&
+                  calendars.map(c => (
+                    <CalendarCard
+                      calendar={c}
+                      editCalendar={() => {
+                        setSelectedCalendar(c);
+                        setIsEditingCalendar(true);
+                        setSelectingAccountType(null);
+                        setIncomeAccountIds(c.incomeAccounts.map(a => a.accountId));
+                        setExpenseAccountIds(c.expenseAccounts.map(a => a.accountId));
+                      }}
+                    />
+                  ))}
+
+                {isEditingCalendar && (
+                  <EditCalendarForm
+                    calendar={selectedCalendar}
+                    cancelForm={() => {
+                      setIsEditingCalendar(false);
+                      setSelectedCalendar(null);
+                      setSelectingAccountType(null);
+                      setIncomeAccountIds([]);
+                      setExpenseAccountIds([]);
+                    }}
+                  />
+                )}
 
                 {isCreatingCalendar && (
                   <CreateCalendarForm

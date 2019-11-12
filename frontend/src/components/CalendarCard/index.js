@@ -8,12 +8,24 @@ const CalendarName = styled('div')`
   color: #000;
 `;
 
+const EditLink = styled('div')`
+  font-size: 12px;
+  text-align: right;
+  width: 100%;
+  cursor: pointer;
+  color: #aaa;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 export default props => {
-  const { calendar } = props;
+  const { calendar, editCalendar } = props;
 
   return (
     <ItemCard borderLeft={calendar.backgroundColor}>
       <CalendarName>{calendar.name}</CalendarName>
+      <EditLink onClick={editCalendar}>edit</EditLink>
     </ItemCard>
   );
 };
