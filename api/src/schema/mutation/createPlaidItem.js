@@ -5,8 +5,9 @@ import AccountType from '../account';
 const CreatePlaidItemPayloadType = new GraphQLObjectType({
   name: 'CreatePlaidItemPayload',
   fields: {
+    errors: { type: GraphQLList(GraphQLString) },
     accounts: {
-      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(AccountType))),
+      type: new GraphQLList(new GraphQLNonNull(AccountType)),
     },
   },
 });
@@ -18,6 +19,7 @@ export default {
     publicToken: { type: new GraphQLNonNull(GraphQLString) },
   },
   resolve: async (_, { publicToken }, { plaidClient, viewer }) => {
+    let itemId;
     let createdAccounts;
 
     try {
@@ -58,6 +60,21 @@ export default {
     } catch (e) {
       // eslint-disable-next-line
       console.error('Error', e);
+
+      if (e && e.error_code === 'ITEM_LOGIN_REQUIRED') {
+        await db.PlaidItem.update(
+          {
+            loginRequired: true,
+          },
+          {
+            where: {
+              itemId,
+              loginRequired: false,
+            },
+          },
+        );
+      }
+
       return {
         errors: ['Error creating item'],
       };

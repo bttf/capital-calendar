@@ -38,7 +38,9 @@ export default {
       const err = (e && e.message) || e;
 
       // eslint-disable-next-line no-console
-      console.error(e.stack);
+      console.log(e);
+      // eslint-disable-next-line no-console
+      console.log(e.stack);
 
       return { errors: ['Could not sync calendars', err] };
     }
