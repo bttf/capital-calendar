@@ -24,6 +24,21 @@ export default async (plaidItem, daysAgo = 30) => {
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error((e && e.message) || e);
+
+    if (e && e.error_code === 'ITEM_LOGIN_REQUIRED') {
+      await db.PlaidItem.update(
+        {
+          loginRequired: true,
+        },
+        {
+          where: {
+            itemId: plaidItem.itemId,
+            loginRequired: false,
+          },
+        },
+      );
+    }
+
     return { errors: ['Error fetching transactions'] };
   }
 
