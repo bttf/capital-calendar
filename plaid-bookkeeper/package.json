@@ -10,7 +10,7 @@
     "debug": "babel-node --inspect=0.0.0.0:9230 src"
   },
   "dependencies": {
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "bull": "^3.10.0",
     "graphql-request": "^1.8.2",
     "jayson": "^3.0.2"
