@@ -11,7 +11,7 @@
     "apollo-link-error": "^1.1.10",
     "apollo-link-http": "^1.5.14",
     "formik": "^1.5.4",
-    "googleapis": "^38.0.0",
+    "googleapis": "^39.1.0",
     "graphql": "^14.1.1",
     "graphql-tag": "^2.10.1",
     "node-sass": "^4.11.0",
