@@ -14,7 +14,7 @@
     "googleapis": "^38.0.0",
     "graphql": "^14.1.1",
     "graphql-tag": "^2.10.1",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.13.1",
     "query-string": "^6.4.0",
     "react": "^16.8.5",
     "react-apollo": "^2.5.3",
